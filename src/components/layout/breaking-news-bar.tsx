@@ -31,9 +31,15 @@ type BannerItem = {
 
 function articleUrl(article: BreakingNewsItem) {
   const category = article.category?.slug;
-  const topic = article.topic ?? "latest";
+  const topic = article.topic;
   const slug = article.slug;
-  if (!category || !slug) return "#";
+  
+  // Return # if essential data is missing
+  if (!category || !slug || !topic) {
+    console.warn('Missing article data for URL construction:', { category, topic, slug, articleId: article.id });
+    return "#";
+  }
+  
   return `/${category}/${topic}/${slug}`;
 }
 
