@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Head from "next/head";
 import { motion, type Variants } from "framer-motion";
 import { Share2, Copy, Facebook, Twitter, Send, Eye, Clock } from "lucide-react";
 import { formatLongDate } from "@/lib/date";
