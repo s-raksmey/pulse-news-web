@@ -120,7 +120,16 @@ export const Q_ARTICLE_BY_SLUG = /* GraphQL */ `
       publishedAt
       createdAt
       updatedAt
+      viewCount
+      isFeatured
+      isEditorsPick
+      isBreaking
+      coverImageUrl
+      ogImageUrl
+      metaTitle
+      metaDescription
       category {
+        id
         name
         slug
       }

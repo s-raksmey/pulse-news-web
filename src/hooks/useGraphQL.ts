@@ -5,7 +5,7 @@ import {
   Q_ARTICLES, 
   Q_ARTICLE_BY_SLUG, 
   Q_CATEGORIES,
-  Q_CATEGORY_ARTICLES,
+  Q_ARTICLES_BY_TOPIC,
   Q_TOPIC_BY_SLUG,
   M_INCREMENT_VIEW
 } from '@/services/article.gql';
@@ -97,18 +97,17 @@ export function useArticles() {
     return executeQuery<{ article: Article }>(Q_ARTICLE_BY_SLUG, { slug });
   }, [executeQuery]);
 
-  const getCategoryArticles = useCallback(async (categorySlug: string, take = 10, skip = 0) => {
-    return executeQuery<{ articles: Article[] }>(Q_CATEGORY_ARTICLES, {
+  const getArticlesByTopic = useCallback(async (categorySlug: string, topicSlug: string) => {
+    return executeQuery<{ articlesByTopic: Article[] }>(Q_ARTICLES_BY_TOPIC, {
       categorySlug,
-      take,
-      skip
+      topicSlug
     });
   }, [executeQuery]);
 
   return {
     getArticles,
     getArticleBySlug,
-    getCategoryArticles,
+    getArticlesByTopic,
     loading,
     error
   };
@@ -199,4 +198,3 @@ export function useArticleSearch() {
     error
   };
 }
-
