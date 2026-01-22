@@ -4,7 +4,7 @@ import { Q_BREAKING_NEWS } from "@/services/article.gql";
 
 export async function GET(request: NextRequest) {
   try {
-    const client = getGqlClient(request.nextUrl.origin);
+    const client = getGqlClient();
     const data = await client.request(Q_BREAKING_NEWS);
 
     return NextResponse.json({

@@ -80,7 +80,7 @@ export async function generateMetadata({
         'article:modified_time': modifiedTime,
         'article:author': author,
         'article:section': article.category?.name || category,
-        'article:tag': article.tags?.map(tag => tag.name).join(',') || '',
+        'article:tag': article.tags?.map((tag: { name: string }) => tag.name).join(',') || '',
       },
     };
   } catch (error) {
