@@ -2,12 +2,15 @@
 
 import { motion } from "framer-motion";
 import type { Variants } from "framer-motion";
+import { useState, useEffect } from "react";
 import HeroSection from "./hero-section";
 import Sidebar from "@/components/layout/sidebar";
 import ArticleCardLarge from "@/components/article/article-card-large";
 import { getTranslations, type Locale } from "@/lib/i18n";
-
-type Article = any;
+import { HomePageSkeleton } from "@/components/ui/skeleton";
+import { Article } from "@/types/article";
+import { useArticles } from "@/hooks/useGraphQL";
+import { AlertCircle, RefreshCw } from "lucide-react";
 
 /* =========================
    Motion Variants (SAFE)
@@ -45,6 +48,45 @@ export default function HomePageClient({
   trending: Article[];
 }) {
   const t = getTranslations(locale);
+  const [isClient, setIsClient] = useState(false);
+  const [hasError, setHasError] = useState(false);
+
+  // Track client-side hydration
+  useEffect(() => {
+    setIsClient(true);
+    
+    // Check if we have any data, if not, it might be an error
+    if (!topStories?.length && !editorsPicks?.length && !trending?.length) {
+      setHasError(true);
+    }
+  }, [topStories, editorsPicks, trending]);
+
+  // Show loading skeleton during SSR or if no data
+  if (!isClient) {
+    return <HomePageSkeleton />;
+  }
+
+  // Error state with retry option
+  if (hasError) {
+    return (
+      <main className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="text-center space-y-4 max-w-md mx-auto px-6">
+          <AlertCircle className="w-16 h-16 text-red-500 mx-auto" />
+          <h2 className="text-2xl font-bold text-slate-900">Unable to Load Content</h2>
+          <p className="text-slate-600">
+            We're having trouble loading the latest news. Please try refreshing the page.
+          </p>
+          <button
+            onClick={() => window.location.reload()}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            <RefreshCw className="w-4 h-4" />
+            Refresh Page
+          </button>
+        </div>
+      </main>
+    );
+  }
 
   // Helper function to generate deterministic values based on article ID
   const generateDeterministicValue = (id: string, seed: number, min: number, max: number) => {
