@@ -26,6 +26,7 @@ export async function generateMetadata({
     const article = result.article || result.articleBySlug;
 
     if (!article) {
+      console.warn(`Metadata generation failed: Article not found for slug: ${slug}`);
       return {
         title: 'Article Not Found',
         description: 'The requested article could not be found.',
@@ -83,7 +84,7 @@ export async function generateMetadata({
       },
     };
   } catch (error) {
-    console.error('Error generating metadata:', error);
+    console.error(`Error generating metadata for article ${slug}:`, error);
     return {
       title: 'Pulse News',
       description: 'Stay informed with the latest news and updates.',
@@ -113,9 +114,20 @@ export default async function ArticlePage({
     // Check the field name - might be 'article' not 'articleBySlug'
     const article = result.article || result.articleBySlug;
     
-    if (!article) notFound();
-    if (article.category?.slug !== category) notFound();
-    if (article.topic !== topic) notFound();
+    if (!article) {
+      console.warn(`Article not found for slug: ${slug}`);
+      notFound();
+    }
+    
+    if (article.category?.slug !== category) {
+      console.warn(`Category mismatch for article ${slug}: expected ${category}, got ${article.category?.slug}`);
+      notFound();
+    }
+    
+    if (article.topic !== topic) {
+      console.warn(`Topic mismatch for article ${slug}: expected ${topic}, got ${article.topic}`);
+      notFound();
+    }
 
     return (
       <ArticlePageClient
@@ -125,7 +137,7 @@ export default async function ArticlePage({
       />
     );
   } catch (error) {
-    console.error("Error fetching article:", error);
+    console.error(`Error fetching article ${slug} (${category}/${topic}):`, error);
     notFound();
   }
 }
