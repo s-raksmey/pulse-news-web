@@ -32,8 +32,8 @@ export async function generateMetadata({
       };
     }
 
-    const title = article.metaTitle || article.title;
-    const description = article.metaDescription || article.excerpt || `Read ${article.title} on Pulse News`;
+    const title = article.seoTitle || article.title;
+    const description = article.seoDescription || article.excerpt || `Read ${article.title} on Pulse News`;
     const publishedTime = article.publishedAt;
     const modifiedTime = article.updatedAt;
     const author = article.authorName || 'Pulse News';

@@ -126,8 +126,8 @@ export const Q_ARTICLE_BY_SLUG = /* GraphQL */ `
       isBreaking
       coverImageUrl
       ogImageUrl
-      metaTitle
-      metaDescription
+      seoTitle
+      seoDescription
       category {
         id
         name
