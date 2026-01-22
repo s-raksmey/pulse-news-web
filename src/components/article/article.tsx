@@ -1,44 +1,16 @@
 "use client";
 
 import Link from "next/link";
+import Head from "next/head";
 import { motion, type Variants } from "framer-motion";
-import { Share2, Copy, Facebook, Twitter, Send } from "lucide-react";
+import { Share2, Copy, Facebook, Twitter, Send, Eye, Clock } from "lucide-react";
 import { formatLongDate } from "@/lib/date";
 import EditorRenderer from "@/components/renderer/editor-renderer";
 import { Breadcrumb } from "@/components/navigation/breadcrumb";
 import { useEffect, useState } from "react";
-
-/* =========================
-   Types
-========================= */
-interface ArticleCategory {
-  id: string;
-  name: string;
-  slug: string;
-}
-
-interface ArticleContentJson {
-  time: number;
-  blocks: Array<{
-    id: string;
-    type: string;
-    data: Record<string, any>;
-  }>;
-  version: string;
-}
-
-interface Article {
-  id: string;
-  title: string;
-  slug: string;
-  contentJson: ArticleContentJson;
-  excerpt: string | null;
-  publishedAt: string;
-  updatedAt: string;
-  authorName: string | null;
-  category: ArticleCategory;
-  topic: string;
-}
+import { useArticleViewTracking } from "@/hooks/useGraphQL";
+import { Article } from "@/types/article";
+import { format } from "date-fns";
 
 /* =========================
    Motion
@@ -82,14 +54,34 @@ export default function ArticlePageClient({
 }) {
   const [currentUrl, setCurrentUrl] = useState("");
   const [isMounted, setIsMounted] = useState(false);
+  const { trackView, viewTracked } = useArticleViewTracking();
 
-  // Get current URL only on client side
+  // Get current URL only on client side and track view
   useEffect(() => {
     setIsMounted(true);
     if (typeof window !== "undefined") {
       setCurrentUrl(window.location.href);
+      // Track article view after component mounts
+      trackView(article.slug);
     }
-  }, []);
+  }, [article.slug, trackView]);
+
+  // Calculate reading time (rough estimate: 200 words per minute)
+  const calculateReadingTime = (contentJson: any) => {
+    if (!contentJson?.blocks) return 1;
+    
+    const wordCount = contentJson.blocks.reduce((count: number, block: any) => {
+      if (block.type === 'paragraph' || block.type === 'header') {
+        const text = block.data?.text || '';
+        return count + text.split(/\s+/).length;
+      }
+      return count;
+    }, 0);
+    
+    return Math.max(1, Math.ceil(wordCount / 200));
+  };
+
+  const readingTime = calculateReadingTime(article.contentJson);
 
   const handleCopyLink = async () => {
     if (navigator.clipboard && currentUrl) {
@@ -161,13 +153,48 @@ export default function ArticlePageClient({
         )}
 
         {/* Meta */}
-        <div className="flex items-center gap-2 text-sm text-slate-500">
+        <div className="flex flex-wrap items-center gap-3 text-sm text-slate-500">
           <span className="font-medium text-slate-700">
             {article.authorName ?? "Pulse News"}
           </span>
           <span>•</span>
           <time>{formatDate(article.publishedAt)}</time>
+          <span>•</span>
+          <div className="flex items-center gap-1">
+            <Clock className="w-3 h-3" />
+            <span>{readingTime} min read</span>
+          </div>
+          {article.viewCount > 0 && (
+            <>
+              <span>•</span>
+              <div className="flex items-center gap-1">
+                <Eye className="w-3 h-3" />
+                <span>{article.viewCount.toLocaleString()} views</span>
+              </div>
+            </>
+          )}
         </div>
+
+        {/* Article badges */}
+        {(article.isFeatured || article.isEditorsPick || article.isBreaking) && (
+          <div className="flex gap-2">
+            {article.isBreaking && (
+              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                Breaking News
+              </span>
+            )}
+            {article.isFeatured && (
+              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                Featured
+              </span>
+            )}
+            {article.isEditorsPick && (
+              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                Editor's Pick
+              </span>
+            )}
+          </div>
+        )}
       </motion.header>
 
       {/* ================= CONTENT ================= */}
