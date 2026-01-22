@@ -44,8 +44,8 @@ export interface Article {
   contentJson: any;
   category: ArticleCategory;
   authorName: string | null;
-  metaTitle?: string | null;
-  metaDescription?: string | null;
+  seoTitle?: string | null;
+  seoDescription?: string | null;
 }
 
 export interface ArticleFilters {

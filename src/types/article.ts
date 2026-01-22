@@ -67,8 +67,8 @@ export interface Article {
   isBreaking: boolean;
   coverImageUrl: string | null;
   ogImageUrl: string | null;
-  metaTitle: string | null;
-  metaDescription: string | null;
+  seoTitle: string | null;
+  seoDescription: string | null;
   authorName: string | null;
   author?: User;
   category: ArticleCategory;
