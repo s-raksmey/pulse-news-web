@@ -241,6 +241,31 @@ export const Q_TRENDING = /* GraphQL */ `
   }
 `;
 
+/* =========================
+   Fallback queries for homepage
+========================= */
+
+export const Q_RECENT_ARTICLES = /* GraphQL */ `
+  query RecentArticles($take: Int = 6) {
+    articles(status: PUBLISHED, take: $take, skip: 0) {
+      id
+      title
+      slug
+      excerpt
+      topic
+      contentJson
+      publishedAt
+      viewCount
+      isFeatured
+      isEditorsPick
+      isBreaking
+      coverImageUrl
+      ogImageUrl
+      category { name slug }
+    }
+  }
+`;
+
 export const M_INCREMENT_VIEW = /* GraphQL */ `
   mutation ($slug: String!) {
     incrementArticleView(slug: $slug)
