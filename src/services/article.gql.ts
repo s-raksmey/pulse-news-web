@@ -288,3 +288,31 @@ export const Q_TOPIC_BY_SLUG = /* GraphQL */ `
     }
   }
 `;
+
+/* =========================
+   Public queries for web frontend
+========================= */
+
+export const Q_LATEST_BY_CATEGORY = /* GraphQL */ `
+  query LatestByCategory($categorySlug: String!, $limit: Int = 20) {
+    latestByCategory(categorySlug: $categorySlug, limit: $limit) {
+      id
+      title
+      slug
+      excerpt
+      topic
+      publishedAt
+      viewCount
+      isFeatured
+      isEditorsPick
+      isBreaking
+      coverImageUrl
+      ogImageUrl
+      contentJson 
+      category {
+        name
+        slug
+      }
+    }
+  }
+`;
