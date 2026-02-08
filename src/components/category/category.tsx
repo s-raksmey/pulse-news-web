@@ -6,6 +6,7 @@ import { motion, type Variants } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Breadcrumb } from "@/components/navigation/breadcrumb";
 import { EmptyState } from "@/components/category/empty-state";
+import React from "react";
 
 /* =========================
    Types
@@ -151,6 +152,21 @@ export default function CategoryClient({
   }
 
   /* CONTENT */
+  const [breakingNewsIds, setBreakingNewsIds] = React.useState<string[]>([]);
+  React.useEffect(() => {
+    async function fetchBreakingNews() {
+      try {
+        const res = await fetch("/api/breaking-news", { cache: "no-store" });
+        if (!res.ok) return;
+        const json = await res.json();
+        if (json.success && Array.isArray(json.data)) {
+          setBreakingNewsIds(json.data.map((item: any) => item.id));
+        }
+      } catch {}
+    }
+    fetchBreakingNews();
+  }, []);
+
   return (
     <main className="bg-white min-h-screen">
       <div className="max-w-6xl mx-auto px-4 py-8">
@@ -169,6 +185,7 @@ export default function CategoryClient({
         >
           {articles.map((a) => {
             const media = a.media;
+            const isBreaking = breakingNewsIds.includes(a.id);
 
             return (
               <motion.article
@@ -187,6 +204,12 @@ export default function CategoryClient({
                         className="object-cover"
                         sizes="280px"
                       />
+                      {isBreaking && (
+                        <span className="absolute top-2 left-2 z-10 flex items-center gap-1 px-3 py-1 rounded-full bg-gradient-to-r from-red-600 to-yellow-400 text-white text-xs font-bold shadow-lg animate-pulse">
+                          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M12 2v2m0 16v2m10-10h-2M4 12H2m15.364-7.364l-1.414 1.414M6.05 17.95l-1.414 1.414M17.95 17.95l-1.414-1.414M6.05 6.05L4.636 4.636"/><circle cx="12" cy="12" r="5"/></svg>
+                          Breaking News
+                        </span>
+                      )}
                     </div>
                   </Link>
                 )}
@@ -200,7 +223,12 @@ export default function CategoryClient({
                         alt={a.title}
                         className="absolute inset-0 w-full h-full object-cover"
                       />
-
+                      {isBreaking && (
+                        <span className="absolute top-2 left-2 z-10 flex items-center gap-1 px-3 py-1 rounded-full bg-gradient-to-r from-red-600 to-yellow-400 text-white text-xs font-bold shadow-lg animate-pulse">
+                          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M12 2v2m0 16v2m10-10h-2M4 12H2m15.364-7.364l-1.414 1.414M6.05 17.95l-1.414 1.414M17.95 17.95l-1.414-1.414M6.05 6.05L4.636 4.636"/><circle cx="12" cy="12" r="5"/></svg>
+                          Breaking News
+                        </span>
+                      )}
                       {/* Play overlay */}
                       <div className="absolute inset-0 flex items-center justify-center">
                         <div className="h-14 w-14 rounded-full bg-black/60 flex items-center justify-center">
@@ -224,6 +252,10 @@ export default function CategoryClient({
                       {a.title}
                     </Link>
                   </h2>
+
+                  {isBreaking && (
+                    <span className="inline-block text-xs font-bold text-red-600 bg-red-100 rounded px-2 py-1 mr-2 animate-pulse">Breaking News</span>
+                  )}
 
                   {(a.excerpt || a.firstParagraph) && (
                     <p className="text-sm text-gray-700 line-clamp-2">

@@ -167,14 +167,21 @@ export function useArticleViewTracking() {
   const [viewTracked, setViewTracked] = useState(false);
 
   const trackView = useCallback(async (slug: string) => {
-    if (viewTracked) return; // Prevent multiple tracking
-    
+    // Use localStorage to persist view tracking for this article
+    if (typeof window === "undefined") return;
+    const key = `pulse-viewed-article-${slug}`;
+    if (localStorage.getItem(key)) {
+      setViewTracked(true);
+      return;
+    }
+
     // Track view after a short delay to ensure user is actually reading
     setTimeout(async () => {
       await incrementView(slug);
+      localStorage.setItem(key, "1");
       setViewTracked(true);
     }, 3000); // 3 second delay
-  }, [incrementView, viewTracked]);
+  }, [incrementView]);
 
   return { trackView, viewTracked };
 }

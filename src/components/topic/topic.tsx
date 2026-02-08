@@ -1,5 +1,7 @@
 "use client";
 
+
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, type Variants } from "framer-motion";
@@ -210,7 +212,7 @@ export default function TopicClient({
         <Breadcrumb
           items={[
             { label: "Home", href: "/" },
-            { label: topicMeta?.category.name || category, href: `/${category}` },
+            { label: topicMeta?.category.name || titleCase(category), href: `/${category}` },
             { label: titleCase(topic) },
           ]}
         />
@@ -223,13 +225,28 @@ export default function TopicClient({
   }
 
   /* ✅ CONTENT */
+  const [breakingNewsIds, setBreakingNewsIds] = useState<string[]>([]);
+  useEffect(() => {
+    async function fetchBreakingNews() {
+      try {
+        const res = await fetch("/api/breaking-news", { cache: "no-store" });
+        if (!res.ok) return;
+        const json = await res.json();
+        if (json.success && Array.isArray(json.data)) {
+          setBreakingNewsIds(json.data.map((item: any) => item.id));
+        }
+      } catch {}
+    }
+    fetchBreakingNews();
+  }, []);
+
   return (
     <main className="bg-white min-h-screen">
       <div className="max-w-6xl mx-auto px-4 py-8">
         <Breadcrumb
           items={[
             { label: "Home", href: "/" },
-            { label: topicMeta?.category.name || category, href: `/${category}` },
+            { label: topicMeta?.category.name || titleCase(category), href: `/${category}` },
             { label: titleCase(topic) },
           ]}
         />
@@ -243,6 +260,7 @@ export default function TopicClient({
           {articles.map((a) => {
             const media = extractFirstMedia(a.contentJson);
             const paragraph = extractFirstParagraph(a.contentJson);
+            const isBreaking = breakingNewsIds.includes(a.id);
 
             return (
               <motion.article
@@ -299,6 +317,10 @@ export default function TopicClient({
                       {a.title}
                     </Link>
                   </h2>
+
+                  {isBreaking && (
+                    <span className="inline-block text-xs font-bold text-red-600 bg-red-100 rounded px-2 py-1 mr-2">Breaking News</span>
+                  )}
 
                   {(a.excerpt || paragraph) && (
                     <p className="text-sm text-gray-700 line-clamp-2">
