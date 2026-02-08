@@ -55,7 +55,7 @@ export async function generateMetadata({
         modifiedTime,
         authors: [author],
         section: article.category?.name,
-        tags: article.tags?.map(tag => tag.name) || [],
+        tags: article.tags?.map((tag: { name: any; }) => tag.name) || [],
         images: imageUrl ? [
           {
             url: imageUrl,

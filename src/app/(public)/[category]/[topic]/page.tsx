@@ -18,19 +18,28 @@ export default async function TopicPage({
   const client = getGqlClient();
 
   try {
-    const [{ topicBySlug }, { articles }] = await Promise.all([
-      client.request(Q_TOPIC_BY_SLUG, {
-        categorySlug: category,
-        topicSlug: topic,
-      }),
+    const isLatest = topic === "latest";
+
+    const [topicResponse, articlesResponse] = await Promise.all([
+      isLatest
+        ? Promise.resolve(null)
+        : client.request(Q_TOPIC_BY_SLUG, {
+            categorySlug: category,
+            topicSlug: topic,
+          }),
       client.request(Q_ARTICLES, {
         status: "PUBLISHED",
         categorySlug: category,
-        topic: topic === "latest" ? undefined : topic,
+        topic: isLatest ? undefined : topic,
         take: 20,
         skip: 0,
       }),
     ]);
+
+    const topicBySlug = isLatest
+      ? null
+      : (topicResponse as { topicBySlug?: any } | null)?.topicBySlug ?? null;
+    const articles = (articlesResponse as { articles?: any[] } | null)?.articles ?? [];
 
     // Prepare data for client component
     const topicMeta = topicBySlug ? {
@@ -43,7 +52,7 @@ export default async function TopicPage({
     } : null;
 
     // Transform articles to match client component type
-    const articlesData = articles?.map((article: any) => ({
+    const articlesData = articles.map((article: any) => ({
       id: article.id,
       title: article.title,
       slug: article.slug,
@@ -52,7 +61,7 @@ export default async function TopicPage({
       publishedAt: article.publishedAt,
       authorName: article.authorName,
       contentJson: article.contentJson,
-    })) || [];
+    }));
 
     return (
       <TopicClient

@@ -117,15 +117,16 @@ export default async function CategoryPage({
   if (!isValidSection(category)) notFound();
 
   const client = getGqlClient();
-  const { articles } = await client.request(Q_ARTICLES, {
+  const articlesResponse = await client.request(Q_ARTICLES, {
     status: "PUBLISHED",
     categorySlug: category,
     take: 20,
     skip: 0,
   });
+  const articles = articlesResponse?.articles ?? [];
 
   // Transform articles with extracted media and paragraphs
-  const articlesWithMedia = articles?.map((article: any) => {
+  const articlesWithMedia = articles.map((article: any) => {
     const media = getArticleMedia(article);
     const paragraph = extractFirstParagraph(article.contentJson);
     
