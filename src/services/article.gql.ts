@@ -316,3 +316,119 @@ export const Q_LATEST_BY_CATEGORY = /* GraphQL */ `
     }
   }
 `;
+
+/* =========================
+   Home Page Category Queries
+========================= */
+
+export const Q_HOME_PAGE_CATEGORIES = /* GraphQL */ `
+  query HomePageCategories {
+    world: latestByCategory(categorySlug: "world", limit: 4) {
+      id
+      title
+      slug
+      excerpt
+      topic
+      publishedAt
+      viewCount
+      coverImageUrl
+      category {
+        name
+        slug
+      }
+    }
+    tech: latestByCategory(categorySlug: "tech", limit: 4) {
+      id
+      title
+      slug
+      excerpt
+      topic
+      publishedAt
+      viewCount
+      coverImageUrl
+      category {
+        name
+        slug
+      }
+    }
+    business: latestByCategory(categorySlug: "business", limit: 4) {
+      id
+      title
+      slug
+      excerpt
+      topic
+      publishedAt
+      viewCount
+      coverImageUrl
+      category {
+        name
+        slug
+      }
+    }
+    politics: latestByCategory(categorySlug: "politics", limit: 4) {
+      id
+      title
+      slug
+      excerpt
+      topic
+      publishedAt
+      viewCount
+      coverImageUrl
+      category {
+        name
+        slug
+      }
+    }
+    sports: latestByCategory(categorySlug: "sports", limit: 4) {
+      id
+      title
+      slug
+      excerpt
+      topic
+      publishedAt
+      viewCount
+      coverImageUrl
+      category {
+        name
+        slug
+      }
+    }
+    culture: latestByCategory(categorySlug: "culture", limit: 4) {
+      id
+      title
+      slug
+      excerpt
+      topic
+      publishedAt
+      viewCount
+      coverImageUrl
+      category {
+        name
+        slug
+      }
+    }
+  }
+`;
+
+export const Q_FEATURED_ARTICLES = /* GraphQL */ `
+  query FeaturedArticles($limit: Int = 5) {
+    articles(status: PUBLISHED, take: $limit, skip: 0) {
+      id
+      title
+      slug
+      excerpt
+      topic
+      publishedAt
+      viewCount
+      isFeatured
+      isEditorsPick
+      isBreaking
+      coverImageUrl
+      ogImageUrl
+      category {
+        name
+        slug
+      }
+    }
+  }
+`;

@@ -2,12 +2,12 @@
 import { cookies } from "next/headers";
 import { getGqlClient } from "@/services/graphql-client";
 import {
-  Q_TOP_STORIES,
-  Q_EDITORS_PICKS,
+  Q_HOME_PAGE_CATEGORIES,
+  Q_FEATURED_ARTICLES,
   Q_TRENDING,
   Q_RECENT_ARTICLES,
 } from "@/services/article.gql";
-import HomePageClient from "@/components/home/home";
+import CategoryHome from "@/components/home/category-home";
 
 export const revalidate = 60;
 
@@ -18,15 +18,15 @@ export default async function HomePage() {
   const locale = requestedLocale === "km" ? "km" : "en";
 
   try {
-    // First, try to fetch the main queries
-    const [top, picks, trending] = await Promise.all([
-      client.request(Q_TOP_STORIES).catch((error) => {
-        console.warn("Failed to fetch top stories:", error);
-        return { topStories: [] };
+    // Fetch category data, featured articles, and trending articles
+    const [categoryResult, featuredResult, trendingResult] = await Promise.all([
+      client.request(Q_HOME_PAGE_CATEGORIES).catch((error) => {
+        console.warn("Failed to fetch category data:", error);
+        return { world: [], tech: [], business: [], politics: [], sports: [], culture: [] };
       }),
-      client.request(Q_EDITORS_PICKS).catch((error) => {
-        console.warn("Failed to fetch editor's picks:", error);
-        return { editorsPicks: [] };
+      client.request(Q_FEATURED_ARTICLES, { limit: 5 }).catch((error) => {
+        console.warn("Failed to fetch featured articles:", error);
+        return { articles: [] };
       }),
       client.request(Q_TRENDING).catch((error) => {
         console.warn("Failed to fetch trending:", error);
@@ -34,27 +34,47 @@ export default async function HomePage() {
       }),
     ]);
 
-    // Check if we got empty results and need fallbacks
-    const topStories = top?.topStories ?? [];
-    const editorsPicks = picks?.editorsPicks ?? [];
-    const trendingArticles = trending?.trending ?? [];
+    // Extract data with fallbacks
+    const categoryData = {
+      world: categoryResult?.world ?? [],
+      tech: categoryResult?.tech ?? [],
+      business: categoryResult?.business ?? [],
+      politics: categoryResult?.politics ?? [],
+      sports: categoryResult?.sports ?? [],
+      culture: categoryResult?.culture ?? [],
+    };
+    
+    const featuredArticles = featuredResult?.articles ?? [];
+    const trendingArticles = trendingResult?.trending ?? [];
 
-    // If all main queries returned empty, try fallback with recent articles
-    if (topStories.length === 0 && editorsPicks.length === 0 && trendingArticles.length === 0) {
+    // If all queries returned empty, try fallback with recent articles
+    const hasAnyData = featuredArticles.length > 0 || 
+      Object.values(categoryData).some(articles => articles.length > 0) ||
+      trendingArticles.length > 0;
+
+    if (!hasAnyData) {
       console.warn("All main queries returned empty, trying fallback with recent articles");
       try {
-        const recentResult = await client.request(Q_RECENT_ARTICLES, { take: 6 });
+        const recentResult = await client.request(Q_RECENT_ARTICLES, { take: 20 });
         const recentArticles = recentResult?.articles ?? [];
         
         if (recentArticles.length > 0) {
           console.log(`Found ${recentArticles.length} recent articles as fallback`);
-          // Use recent articles for all sections as fallback
+          // Distribute recent articles across categories as fallback
+          const articlesPerCategory = Math.ceil(recentArticles.length / 6);
           return (
-            <HomePageClient
+            <CategoryHome
               locale={locale}
-              topStories={recentArticles.slice(0, 3)}
-              editorsPicks={recentArticles.slice(0, 3)}
-              trending={recentArticles}
+              featuredArticles={recentArticles.slice(0, 5)}
+              categoryData={{
+                world: recentArticles.slice(0, articlesPerCategory),
+                tech: recentArticles.slice(articlesPerCategory, articlesPerCategory * 2),
+                business: recentArticles.slice(articlesPerCategory * 2, articlesPerCategory * 3),
+                politics: recentArticles.slice(articlesPerCategory * 3, articlesPerCategory * 4),
+                sports: recentArticles.slice(articlesPerCategory * 4, articlesPerCategory * 5),
+                culture: recentArticles.slice(articlesPerCategory * 5, articlesPerCategory * 6),
+              }}
+              trendingArticles={recentArticles.slice(0, 6)}
             />
           );
         }
@@ -64,21 +84,28 @@ export default async function HomePage() {
     }
 
     return (
-      <HomePageClient
+      <CategoryHome
         locale={locale}
-        topStories={topStories}
-        editorsPicks={editorsPicks}
-        trending={trendingArticles}
+        featuredArticles={featuredArticles}
+        categoryData={categoryData}
+        trendingArticles={trendingArticles}
       />
     );
   } catch (error) {
     console.error("Error fetching home page data:", error);
     return (
-      <HomePageClient
+      <CategoryHome
         locale={locale}
-        topStories={[]}
-        editorsPicks={[]}
-        trending={[]}
+        featuredArticles={[]}
+        categoryData={{
+          world: [],
+          tech: [],
+          business: [],
+          politics: [],
+          sports: [],
+          culture: [],
+        }}
+        trendingArticles={[]}
       />
     );
   }
