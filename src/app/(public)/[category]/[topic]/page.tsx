@@ -2,7 +2,7 @@
 import { notFound } from "next/navigation";
 import TopicClient from "@/components/topic/topic";
 import { getGqlClient } from "@/services/graphql-client";
-import { Q_ARTICLES, Q_TOPIC_BY_SLUG } from "@/services/article.gql";
+import { Q_ARTICLES_BY_TOPIC, Q_TOPIC_BY_SLUG, Q_LATEST_BY_CATEGORY } from "@/services/article.gql";
 import { isValidSection } from "@/config/editorial";
 
 export const revalidate = 60;
@@ -27,19 +27,23 @@ export default async function TopicPage({
             categorySlug: category,
             topicSlug: topic,
           }),
-      client.request(Q_ARTICLES, {
-        status: "PUBLISHED",
-        categorySlug: category,
-        topic: isLatest ? undefined : topic,
-        take: 20,
-        skip: 0,
-      }),
+      isLatest
+        ? client.request(Q_LATEST_BY_CATEGORY, {
+            categorySlug: category,
+            limit: 20,
+          })
+        : client.request(Q_ARTICLES_BY_TOPIC, {
+            categorySlug: category,
+            topicSlug: topic,
+          }),
     ]);
 
     const topicBySlug = isLatest
       ? null
       : (topicResponse as { topicBySlug?: any } | null)?.topicBySlug ?? null;
-    const articles = (articlesResponse as { articles?: any[] } | null)?.articles ?? [];
+    const articles = isLatest
+      ? (articlesResponse as { latestByCategory?: any[] } | null)?.latestByCategory ?? []
+      : (articlesResponse as { articlesByTopic?: any[] } | null)?.articlesByTopic ?? [];
 
     // Prepare data for client component
     const topicMeta = topicBySlug ? {

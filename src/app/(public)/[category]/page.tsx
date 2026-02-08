@@ -2,7 +2,7 @@
 import { notFound } from "next/navigation";
 import CategoryClient from "@/components/category/category";
 import { getGqlClient } from "@/services/graphql-client";
-import { Q_ARTICLES } from "@/services/article.gql";
+import { Q_LATEST_BY_CATEGORY } from "@/services/article.gql";
 import { isValidSection } from "@/config/editorial";
 
 export const revalidate = 60;
@@ -117,13 +117,11 @@ export default async function CategoryPage({
   if (!isValidSection(category)) notFound();
 
   const client = getGqlClient();
-  const articlesResponse = await client.request(Q_ARTICLES, {
-    status: "PUBLISHED",
+  const articlesResponse = await client.request(Q_LATEST_BY_CATEGORY, {
     categorySlug: category,
-    take: 20,
-    skip: 0,
+    limit: 20,
   });
-  const articles = articlesResponse?.articles ?? [];
+  const articles = articlesResponse?.latestByCategory ?? [];
 
   // Transform articles with extracted media and paragraphs
   const articlesWithMedia = articles.map((article: any) => {
