@@ -6,6 +6,7 @@ import { Article } from "@/types/article";
 import { getTranslations, type Locale } from "@/lib/i18n";
 import { HomePageSkeleton } from "@/components/ui/skeleton";
 import { AlertCircle, RefreshCw } from "lucide-react";
+import { formatDistanceToNow } from "date-fns";
 import HeroSection from "./hero-section";
 import CategorySection from "./category-section";
 import Sidebar from "@/components/layout/sidebar";
@@ -154,60 +155,131 @@ export default function CategoryHome({
   })) || [];
 
   return (
-    <main className="min-h-screen bg-slate-50">
-      {/* Hero Section */}
-      {transformedFeatured.length > 0 && (
-        <HeroSection locale={locale} featuredArticles={transformedFeatured.slice(0, 5)} />
-      )}
-
-      {/* Main Content */}
-      <div className="mx-auto max-w-7xl px-6 py-12">
-        <div className="grid gap-8 lg:grid-cols-12">
-          {/* Category Sections */}
-          <div className="lg:col-span-8">
-            <motion.div
-              variants={stagger}
-              initial="hidden"
-              animate="show"
-              className="space-y-8"
-            >
-              {/* Page Title */}
-              <motion.div variants={fadeUp} className="text-center mb-12">
-                <h1 className="text-4xl font-bold text-slate-900 mb-4">
-                  Latest News by Category
-                </h1>
-                <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-                  Stay informed with the latest updates from around the world, organized by topic
-                </p>
-              </motion.div>
-
-              {/* Category Sections */}
-              {categories.map((category) => {
-                const articles = categoryData[category.key as keyof typeof categoryData] || [];
-                return (
-                  <CategorySection
-                    key={category.key}
-                    title={category.title}
-                    slug={category.slug}
-                    articles={articles}
-                    locale={locale}
-                  />
-                );
-              })}
-            </motion.div>
-          </div>
-
-          {/* Sidebar */}
-          <div className="lg:col-span-4">
-            <div className="sticky top-8">
-              <Sidebar
-                locale={locale}
-                trendingArticles={transformedTrending}
-                showNewsletter={true}
-              />
-            </div>
-          </div>
+    <main className="min-h-screen bg-white">
+      {/* Simplified Hero Section - No images, just text */}
+      <section className="py-16 bg-gradient-to-br from-slate-50 to-slate-100">
+        <div className="mx-auto max-w-4xl px-6 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <h1 className="text-5xl font-bold text-slate-900 mb-6">
+              Stay Informed
+            </h1>
+            <p className="text-xl text-slate-600 mb-8 max-w-2xl mx-auto">
+              Get the latest news and insights from around the world in a clean, distraction-free format.
+            </p>
+          </motion.div>
         </div>
+      </section>
+
+      {/* Main Content - Simplified Layout */}
+      <div className="mx-auto max-w-4xl px-6 py-12">
+        <motion.div
+          variants={stagger}
+          initial="hidden"
+          animate="show"
+          className="space-y-12"
+        >
+          {/* Featured Articles - Text Only */}
+          {transformedFeatured.length > 0 && (
+            <motion.section variants={fadeUp}>
+              <h2 className="text-2xl font-bold text-slate-900 mb-6 border-b border-slate-200 pb-2">
+                Featured Stories
+              </h2>
+              <div className="space-y-6">
+                {transformedFeatured.slice(0, 3).map((article, index) => (
+                  <article key={article.id} className="border-b border-slate-100 pb-6 last:border-b-0">
+                    <div className="flex items-start gap-4">
+                      <span className="text-2xl font-bold text-slate-300 mt-1">
+                        {String(index + 1).padStart(2, '0')}
+                      </span>
+                      <div className="flex-1">
+                        <h3 className="text-xl font-semibold text-slate-900 mb-2 hover:text-blue-600 transition-colors">
+                          <a href={`/article/${article.slug}`}>
+                            {article.title}
+                          </a>
+                        </h3>
+                        {article.excerpt && (
+                          <p className="text-slate-600 mb-3 line-clamp-2">
+                            {article.excerpt}
+                          </p>
+                        )}
+                        <div className="flex items-center gap-4 text-sm text-slate-500">
+                          {article.category && (
+                            <span className="font-medium text-blue-600">
+                              {article.category.name}
+                            </span>
+                          )}
+                          <span>
+                            {formatDistanceToNow(new Date(article.publishedAt), { addSuffix: true })}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </motion.section>
+          )}
+
+          {/* Latest News - Simplified */}
+          <motion.section variants={fadeUp}>
+            <h2 className="text-2xl font-bold text-slate-900 mb-6 border-b border-slate-200 pb-2">
+              Latest News
+            </h2>
+            <div className="grid gap-6 md:grid-cols-2">
+              {/* Combine articles from top 3 categories only */}
+              {[
+                ...categoryData.world.slice(0, 2),
+                ...categoryData.tech.slice(0, 2),
+                ...categoryData.business.slice(0, 2),
+              ].slice(0, 6).map((article) => (
+                <article key={article.id} className="group">
+                  <h3 className="text-lg font-semibold text-slate-900 mb-2 group-hover:text-blue-600 transition-colors">
+                    <a href={`/article/${article.slug}`}>
+                      {article.title}
+                    </a>
+                  </h3>
+                  <div className="flex items-center gap-4 text-sm text-slate-500">
+                    {article.category && (
+                      <span className="font-medium text-blue-600">
+                        {article.category.name}
+                      </span>
+                    )}
+                    <span>
+                      {formatDistanceToNow(new Date(article.publishedAt), { addSuffix: true })}
+                    </span>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </motion.section>
+
+          {/* Simple Categories Navigation */}
+          <motion.section variants={fadeUp}>
+            <h2 className="text-2xl font-bold text-slate-900 mb-6 border-b border-slate-200 pb-2">
+              Browse by Category
+            </h2>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {categories.slice(0, 6).map((category) => (
+                <a
+                  key={category.key}
+                  href={`/${category.slug}`}
+                  className="p-4 rounded-lg border border-slate-200 hover:border-blue-300 hover:bg-blue-50 transition-all group"
+                >
+                  <h3 className="font-semibold text-slate-900 group-hover:text-blue-600">
+                    {category.title}
+                  </h3>
+                  <p className="text-sm text-slate-500 mt-1">
+                    {categoryData[category.key as keyof typeof categoryData]?.length || 0} articles
+                  </p>
+                </a>
+              ))}
+            </div>
+          </motion.section>
+        </motion.div>
       </div>
     </main>
   );
