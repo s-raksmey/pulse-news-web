@@ -156,66 +156,67 @@ export default function CategoryHome({
 
   return (
     <main className="min-h-screen bg-white">
-      {/* Simplified Hero Section - No images, just text */}
-      <section className="py-16 bg-gradient-to-br from-slate-50 to-slate-100">
-        <div className="mx-auto max-w-4xl px-6 text-center">
+      {/* Clean Hero Section */}
+      <section className="py-20 bg-gradient-to-b from-gray-50 to-white">
+        <div className="mx-auto max-w-5xl px-6 text-center">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.8 }}
           >
-            <h1 className="text-5xl font-bold text-slate-900 mb-6">
-              Stay Informed
+            <h1 className="text-6xl font-bold text-gray-900 mb-6 tracking-tight">
+              Pulse News
             </h1>
-            <p className="text-xl text-slate-600 mb-8 max-w-2xl mx-auto">
-              Get the latest news and insights from around the world in a clean, distraction-free format.
+            <p className="text-2xl text-gray-600 mb-12 max-w-3xl mx-auto leading-relaxed">
+              Your source for the latest news and insights from around the world
             </p>
           </motion.div>
         </div>
       </section>
 
-      {/* Main Content - Simplified Layout */}
-      <div className="mx-auto max-w-4xl px-6 py-12">
+      {/* Main Content */}
+      <div className="mx-auto max-w-5xl px-6 py-16">
         <motion.div
           variants={stagger}
           initial="hidden"
           animate="show"
-          className="space-y-12"
+          className="space-y-16"
         >
-          {/* Featured Articles - Text Only */}
+          {/* Featured Stories */}
           {transformedFeatured.length > 0 && (
             <motion.section variants={fadeUp}>
-              <h2 className="text-2xl font-bold text-slate-900 mb-6 border-b border-slate-200 pb-2">
-                Featured Stories
-              </h2>
-              <div className="space-y-6">
-                {transformedFeatured.slice(0, 3).map((article, index) => (
-                  <article key={article.id} className="border-b border-slate-100 pb-6 last:border-b-0">
-                    <div className="flex items-start gap-4">
-                      <span className="text-2xl font-bold text-slate-300 mt-1">
-                        {String(index + 1).padStart(2, '0')}
-                      </span>
-                      <div className="flex-1">
-                        <h3 className="text-xl font-semibold text-slate-900 mb-2 hover:text-blue-600 transition-colors">
-                          <a href={`/article/${article.slug}`}>
-                            {article.title}
-                          </a>
-                        </h3>
-                        {article.excerpt && (
-                          <p className="text-slate-600 mb-3 line-clamp-2">
-                            {article.excerpt}
-                          </p>
-                        )}
-                        <div className="flex items-center gap-4 text-sm text-slate-500">
-                          {article.category && (
-                            <span className="font-medium text-blue-600">
-                              {article.category.name}
-                            </span>
-                          )}
-                          <span>
-                            {formatDistanceToNow(new Date(article.publishedAt), { addSuffix: true })}
+              <div className="text-center mb-12">
+                <h2 className="text-4xl font-bold text-gray-900 mb-4">
+                  Featured Stories
+                </h2>
+                <div className="w-24 h-1 bg-blue-600 mx-auto"></div>
+              </div>
+              <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                {transformedFeatured.slice(0, 6).map((article, index) => (
+                  <article key={article.id} className="group cursor-pointer">
+                    <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300 h-full">
+                      <div className="flex items-start gap-3 mb-4">
+                        <span className="text-lg font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
+                          {String(index + 1).padStart(2, '0')}
+                        </span>
+                        {article.category && (
+                          <span className="text-xs font-semibold text-blue-600 bg-blue-50 px-2 py-1 rounded-full uppercase tracking-wide">
+                            {article.category.name}
                           </span>
-                        </div>
+                        )}
+                      </div>
+                      <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors leading-tight">
+                        <a href={`/article/${article.slug}`}>
+                          {article.title}
+                        </a>
+                      </h3>
+                      {article.excerpt && (
+                        <p className="text-gray-600 mb-4 line-clamp-3 leading-relaxed">
+                          {article.excerpt}
+                        </p>
+                      )}
+                      <div className="text-sm text-gray-500">
+                        {formatDistanceToNow(new Date(article.publishedAt), { addSuffix: true })}
                       </div>
                     </div>
                   </article>
@@ -224,58 +225,39 @@ export default function CategoryHome({
             </motion.section>
           )}
 
-          {/* Latest News - Simplified */}
+          {/* Latest News */}
           <motion.section variants={fadeUp}>
-            <h2 className="text-2xl font-bold text-slate-900 mb-6 border-b border-slate-200 pb-2">
-              Latest News
-            </h2>
-            <div className="grid gap-6 md:grid-cols-2">
-              {/* Combine articles from top 3 categories only */}
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-bold text-gray-900 mb-4">
+                Latest News
+              </h2>
+              <div className="w-24 h-1 bg-blue-600 mx-auto"></div>
+            </div>
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {[
-                ...categoryData.world.slice(0, 2),
-                ...categoryData.tech.slice(0, 2),
-                ...categoryData.business.slice(0, 2),
-              ].slice(0, 6).map((article) => (
+                ...categoryData.world.slice(0, 3),
+                ...categoryData.tech.slice(0, 3),
+                ...categoryData.business.slice(0, 3),
+              ].slice(0, 9).map((article) => (
                 <article key={article.id} className="group">
-                  <h3 className="text-lg font-semibold text-slate-900 mb-2 group-hover:text-blue-600 transition-colors">
-                    <a href={`/article/${article.slug}`}>
-                      {article.title}
-                    </a>
-                  </h3>
-                  <div className="flex items-center gap-4 text-sm text-slate-500">
-                    {article.category && (
-                      <span className="font-medium text-blue-600">
-                        {article.category.name}
+                  <div className="bg-white rounded-lg p-6 border border-gray-100 hover:border-blue-200 hover:shadow-md transition-all duration-300">
+                    <div className="flex items-center gap-2 mb-3">
+                      {article.category && (
+                        <span className="text-xs font-semibold text-blue-600 bg-blue-50 px-2 py-1 rounded-full uppercase tracking-wide">
+                          {article.category.name}
+                        </span>
+                      )}
+                      <span className="text-xs text-gray-500">
+                        {formatDistanceToNow(new Date(article.publishedAt), { addSuffix: true })}
                       </span>
-                    )}
-                    <span>
-                      {formatDistanceToNow(new Date(article.publishedAt), { addSuffix: true })}
-                    </span>
+                    </div>
+                    <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors leading-tight">
+                      <a href={`/article/${article.slug}`}>
+                        {article.title}
+                      </a>
+                    </h3>
                   </div>
                 </article>
-              ))}
-            </div>
-          </motion.section>
-
-          {/* Simple Categories Navigation */}
-          <motion.section variants={fadeUp}>
-            <h2 className="text-2xl font-bold text-slate-900 mb-6 border-b border-slate-200 pb-2">
-              Browse by Category
-            </h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {categories.slice(0, 6).map((category) => (
-                <a
-                  key={category.key}
-                  href={`/${category.slug}`}
-                  className="p-4 rounded-lg border border-slate-200 hover:border-blue-300 hover:bg-blue-50 transition-all group"
-                >
-                  <h3 className="font-semibold text-slate-900 group-hover:text-blue-600">
-                    {category.title}
-                  </h3>
-                  <p className="text-sm text-slate-500 mt-1">
-                    {categoryData[category.key as keyof typeof categoryData]?.length || 0} articles
-                  </p>
-                </a>
               ))}
             </div>
           </motion.section>
