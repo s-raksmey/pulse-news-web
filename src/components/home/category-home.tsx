@@ -199,13 +199,13 @@ export default function CategoryHome({
                   ...categoryData.business.slice(0, 2),
                 ].slice(0, 6).map((article) => (
                   <article key={article.id} className="group">
-                    <div className="border border-gray-100 rounded-lg p-3 hover:border-gray-300 transition-colors">
+                    <div className="border border-gray-100 rounded-lg p-3 hover:border-gray-300 transition-colors min-h-[60px] flex flex-col justify-between">
                       <h3 className="font-medium text-gray-900 mb-1 group-hover:text-indigo-600 transition-colors text-xs sm:text-sm leading-tight">
-                        <a href={`/article/${article.slug}`} className="line-clamp-2">
+                        <a href={`/article/${article.slug}`} className="line-clamp-2 block">
                           {article.title}
                         </a>
                       </h3>
-                      <div className="text-xs text-gray-500">
+                      <div className="text-xs text-gray-500 mt-auto">
                         {formatDistanceToNow(new Date(article.publishedAt), { addSuffix: true })}
                       </div>
                     </div>
@@ -268,23 +268,25 @@ export default function CategoryHome({
                 <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-2">
                   {categoryData.tech.slice(0, 4).map((article) => (
                     <article key={article.id} className="group">
-                      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
+                      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow flex flex-col h-full min-h-[220px]">
                         {/* Image placeholder */}
                         <div className="aspect-video bg-gray-100 flex items-center justify-center">
                           <span className="text-gray-400 text-xs sm:text-sm">Image</span>
                         </div>
-                        <div className="p-3 sm:p-4">
-                          <h3 className="font-medium text-gray-900 mb-1 sm:mb-2 group-hover:text-indigo-600 transition-colors text-xs sm:text-sm leading-tight">
-                            <a href={`/article/${article.slug}`} className="line-clamp-2">
-                              {article.title}
-                            </a>
-                          </h3>
-                          <div className="text-xs text-gray-500 mb-1 sm:mb-2">
-                            {formatDistanceToNow(new Date(article.publishedAt), { addSuffix: true })}
+                        <div className="flex flex-col flex-1 p-3 sm:p-4 justify-between">
+                          <div>
+                            <h3 className="font-medium text-gray-900 mb-1 sm:mb-2 group-hover:text-indigo-600 transition-colors text-xs sm:text-sm leading-tight">
+                              <a href={`/article/${article.slug}`} className="line-clamp-1">
+                                {article.title}
+                              </a>
+                            </h3>
+                            <div className="text-xs text-gray-500 mb-1 sm:mb-2">
+                              {formatDistanceToNow(new Date(article.publishedAt), { addSuffix: true })}
+                            </div>
                           </div>
                           {article.excerpt && (
-                            <p className="text-xs text-gray-600 line-clamp-2">
-                              {article.excerpt.substring(0, 60)}...
+                            <p className="text-xs text-gray-600 line-clamp-2 overflow-hidden">
+                              {article.excerpt}
                             </p>
                           )}
                         </div>
@@ -305,7 +307,7 @@ export default function CategoryHome({
               <div className="space-y-3 sm:space-y-4">
                 {transformedFeatured.slice(0, 6).map((article, index) => (
                   <article key={article.id} className="group">
-                    <div className="flex gap-2 sm:gap-3 border border-gray-100 rounded-lg p-2 sm:p-3 hover:border-gray-300 transition-colors">
+                    <div className="flex gap-2 sm:gap-3 border border-gray-100 rounded-lg p-2 sm:p-3 hover:border-gray-300 transition-colors min-h-[60px]">
                       {/* Ranking number */}
                       <div className="flex-shrink-0 w-6 h-6 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-xs font-bold">
                         {index + 1}
@@ -314,13 +316,13 @@ export default function CategoryHome({
                       <div className="w-12 sm:w-16 h-9 sm:h-12 bg-gray-100 rounded flex-shrink-0 flex items-center justify-center">
                         <span className="text-gray-400 text-xs">Img</span>
                       </div>
-                      <div className="flex-1 min-w-0">
+                      <div className="flex-1 min-w-0 flex flex-col justify-between">
                         <h3 className="font-medium text-gray-900 mb-1 group-hover:text-indigo-600 transition-colors text-xs sm:text-sm leading-tight">
-                          <a href={`/article/${article.slug}`} className="line-clamp-2">
+                          <a href={`/article/${article.slug}`} className="line-clamp-2 block">
                             {article.title}
                           </a>
                         </h3>
-                        <div className="text-xs text-gray-500">
+                        <div className="text-xs text-gray-500 mt-auto">
                           {formatDistanceToNow(new Date(article.publishedAt), { addSuffix: true })}
                         </div>
                       </div>
