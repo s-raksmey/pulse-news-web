@@ -1,0 +1,6 @@
+<svg width="140" height="32" viewBox="0 0 140 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <text x="0" y="22" font-family="'Inter', Arial, sans-serif" font-size="20" font-weight="bold" fill="#385CF5">PULSE</text>
+  <text x="70" y="22" font-family="'Inter', Arial, sans-serif" font-size="14" font-weight="700" fill="#ef4444">NEWS</text>
+  <!-- Pulse line under PULSE -->
+  <polyline points="2,27 12,27 16,23 20,31 24,27 38,27" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+</svg>

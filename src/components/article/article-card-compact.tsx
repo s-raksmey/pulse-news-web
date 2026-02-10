@@ -105,7 +105,7 @@ export default function ArticleCardCompact({
             )}
 
             {/* Title */}
-            <h3 className="mb-2 text-sm font-semibold leading-tight text-slate-900 transition-colors group-hover:text-blue-600 line-clamp-2">
+            <h3 className="mb-2 text-sm font-semibold leading-tight transition-colors group-hover:text-blue-600 line-clamp-2" style={{ color: '#385CF5' }}>
               {article.title}
             </h3>
 

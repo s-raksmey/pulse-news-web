@@ -30,7 +30,7 @@ const fadeUp = {
   show: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5, ease: "easeOut" },
+    transition: { duration: 0.5, ease: [0, 0, 0.58, 1] },
   },
 };
 
@@ -189,7 +189,7 @@ export default function CategoryHome({
           {/* Latest News - Full width on mobile, left column on desktop */}
           <motion.section variants={fadeUp} className="lg:col-span-1 order-1 lg:order-1">
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
-              <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4 sm:mb-6 border-b border-gray-200 pb-2 sm:pb-3">
+              <h2 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6 border-b border-gray-200 pb-2 sm:pb-3" style={{ color: '#385CF5' }}>
                 Latest News
               </h2>
               <div className="space-y-3 sm:space-y-4">
@@ -221,7 +221,7 @@ export default function CategoryHome({
               {/* World Section */}
               <section>
                 <div className="flex items-center justify-between mb-4 sm:mb-6">
-                  <h2 className="text-xl sm:text-2xl font-bold text-gray-900">World</h2>
+                  <h2 className="text-xl sm:text-2xl font-bold" style={{ color: '#385CF5' }}>World</h2>
                   <a href="/world" className="text-indigo-600 hover:text-indigo-700 text-xs sm:text-sm font-medium">
                     view all
                   </a>
@@ -229,23 +229,25 @@ export default function CategoryHome({
                 <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-2">
                   {categoryData.world.slice(0, 4).map((article) => (
                     <article key={article.id} className="group">
-                      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
+                      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow flex flex-col h-full min-h-[220px]">
                         {/* Image placeholder */}
                         <div className="aspect-video bg-gray-100 flex items-center justify-center">
                           <span className="text-gray-400 text-xs sm:text-sm">Image</span>
                         </div>
-                        <div className="p-3 sm:p-4">
-                          <h3 className="font-medium text-gray-900 mb-1 sm:mb-2 group-hover:text-indigo-600 transition-colors text-xs sm:text-sm leading-tight">
-                            <a href={`/article/${article.slug}`} className="line-clamp-2">
-                              {article.title}
-                            </a>
-                          </h3>
-                          <div className="text-xs text-gray-500 mb-1 sm:mb-2">
-                            {formatDistanceToNow(new Date(article.publishedAt), { addSuffix: true })}
+                        <div className="flex flex-col flex-1 p-3 sm:p-4 justify-between">
+                          <div>
+                            <h3 className="font-medium text-gray-900 mb-1 sm:mb-2 group-hover:text-indigo-600 transition-colors text-xs sm:text-sm leading-tight">
+                              <a href={`/article/${article.slug}`} className="line-clamp-1">
+                                {article.title}
+                              </a>
+                            </h3>
+                            <div className="text-xs text-gray-500 mb-1 sm:mb-2">
+                              {formatDistanceToNow(new Date(article.publishedAt), { addSuffix: true })}
+                            </div>
                           </div>
                           {article.excerpt && (
-                            <p className="text-xs text-gray-600 line-clamp-2">
-                              {article.excerpt.substring(0, 60)}...
+                            <p className="text-xs text-gray-600 line-clamp-2 overflow-hidden">
+                              {article.excerpt}
                             </p>
                           )}
                         </div>
@@ -258,7 +260,7 @@ export default function CategoryHome({
               {/* Tech Section */}
               <section>
                 <div className="flex items-center justify-between mb-4 sm:mb-6">
-                  <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Tech</h2>
+                  <h2 className="text-xl sm:text-2xl font-bold" style={{ color: '#385CF5' }}>Tech</h2>
                   <a href="/tech" className="text-indigo-600 hover:text-indigo-700 text-xs sm:text-sm font-medium">
                     view all
                   </a>
@@ -297,7 +299,7 @@ export default function CategoryHome({
           {/* Popular News - Full width on mobile, right column on desktop */}
           <motion.aside variants={fadeUp} className="lg:col-span-1 order-2 lg:order-3">
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
-              <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4 sm:mb-6 border-b border-gray-200 pb-2 sm:pb-3">
+              <h2 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6 border-b border-gray-200 pb-2 sm:pb-3" style={{ color: '#385CF5' }}>
                 Popular News
               </h2>
               <div className="space-y-3 sm:space-y-4">

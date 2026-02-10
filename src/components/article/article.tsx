@@ -140,7 +140,7 @@ export default function ArticlePageClient({
       {/* ================= HEADER ================= */}
       <motion.header variants={fadeUp} className="mb-8 space-y-5">
         {/* Title - Made smaller */}
-        <h1 className="text-xl sm:text-2xl lg:text-[2rem] font-bold leading-snug tracking-tight text-slate-900">
+        <h1 className="text-xl sm:text-2xl lg:text-[2rem] font-bold leading-snug tracking-tight" style={{ color: '#385CF5' }}>
           {article.title}
         </h1>
 

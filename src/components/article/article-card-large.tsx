@@ -136,7 +136,7 @@ export default function ArticleCardLarge({
 
               {/* Title */}
               <Link href={articleUrl}>
-                <h2 className="mb-3 text-2xl font-bold leading-tight text-slate-900 transition-colors group-hover:text-blue-600">
+                <h2 className="mb-3 text-2xl font-bold leading-tight transition-colors group-hover:text-blue-600" style={{ color: '#385CF5' }}>
                   {article.title}
                 </h2>
               </Link>

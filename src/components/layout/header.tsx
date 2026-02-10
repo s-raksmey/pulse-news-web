@@ -34,8 +34,13 @@ export default function Header({ locale }: HeaderProps) {
       <header className="relative z-50 border-b bg-white" onMouseLeave={() => setActive(null)}>
         <div className="mx-auto flex min-h-16 max-w-7xl items-center gap-4 px-4 sm:px-6">
           <div className="flex shrink-0 items-center">
-            <Link href="/" className="font-semibold tracking-wide">
-              PULSE <span className="text-xs text-slate-500">NEWS</span>
+            <Link href="/" className="flex items-center" aria-label="Pulse News Home">
+              <img
+                src="/assets/pulse-news-logo.svg"
+                alt="Pulse News Logo"
+                className="h-10 w-auto"
+                style={{ minWidth: 120 }}
+              />
             </Link>
           </div>
 
@@ -75,9 +80,6 @@ export default function Header({ locale }: HeaderProps) {
             {/* Desktop Navigation */}
             <div className="hidden items-center gap-3 md:flex">
               <LanguageToggle initialLocale={locale} />
-              <Link href="/admin" className="rounded-md border px-3 py-1.5 text-sm hover:bg-slate-100">
-                {t.header.cmsLabel}
-              </Link>
             </div>
 
             {/* Mobile Menu Button */}

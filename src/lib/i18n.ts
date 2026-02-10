@@ -4,7 +4,7 @@ type TranslationSet = {
   nav: Record<"home" | "world" | "tech" | "business" | "politics" | "sports" | "culture", string>;
   header: {
     searchLabel: string;
-    cmsLabel: string;
+    // cmsLabel: string;
   };
   mobile: {
     cmsDashboard: string;
@@ -86,7 +86,7 @@ export const TRANSLATIONS: Record<Locale, TranslationSet> = {
     },
     header: {
       searchLabel: "Search",
-      cmsLabel: "CMS",
+      // cmsLabel: "CMS",
     },
     mobile: {
       cmsDashboard: "CMS Dashboard",
@@ -166,7 +166,7 @@ export const TRANSLATIONS: Record<Locale, TranslationSet> = {
     },
     header: {
       searchLabel: "ស្វែងរក",
-      cmsLabel: "CMS",
+      // cmsLabel: "CMS",
     },
     mobile: {
       cmsDashboard: "ផ្ទាំងគ្រប់គ្រង CMS",
