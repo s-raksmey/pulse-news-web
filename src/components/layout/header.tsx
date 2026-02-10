@@ -52,7 +52,7 @@ export default function Header({ locale }: HeaderProps) {
                   key={item.key}
                   href={item.href}
                   onMouseEnter={() => setActive(hasDropdown ? item.key : null)}
-                  className="flex items-center gap-1 leading-tight text-slate-800 hover:text-slate-900"
+                  className="flex items-center gap-1 leading-tight text-slate-800 hover:text-[#385CF5]"
                 >
                   {t.nav[item.key as keyof typeof t.nav]}
                   {hasDropdown && (
@@ -71,7 +71,7 @@ export default function Header({ locale }: HeaderProps) {
             {/* Search Button */}
             <button
               onClick={() => setIsSearchOpen(true)}
-              className="rounded-md p-2 text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+              className="rounded-md p-2 text-slate-600 hover:bg-slate-100 hover:text-[#385CF5]"
               aria-label={t.header.searchLabel}
             >
               <Search className="h-4 w-4" />
@@ -85,7 +85,7 @@ export default function Header({ locale }: HeaderProps) {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMobileMenuOpen(true)}
-              className="rounded-md p-2 text-slate-600 hover:bg-slate-100 hover:text-slate-900 md:hidden"
+              className="rounded-md p-2 text-slate-600 hover:bg-slate-100 hover:text-[#385CF5] md:hidden"
               aria-label="Open menu"
             >
               <Menu className="h-5 w-5" />
