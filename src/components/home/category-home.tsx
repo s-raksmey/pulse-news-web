@@ -245,7 +245,7 @@ export default function CategoryHome({
                               {formatDistanceToNow(new Date(article.publishedAt), { addSuffix: true })}
                             </div>
                             {article.excerpt && (
-                              <p className="text-xs text-gray-600 line-clamp-3">
+                              <p className="text-xs text-gray-600 line-clamp-1">
                                 {article.excerpt}
                               </p>
                             )}
@@ -284,7 +284,7 @@ export default function CategoryHome({
                               {formatDistanceToNow(new Date(article.publishedAt), { addSuffix: true })}
                             </div>
                             {article.excerpt && (
-                              <p className="text-xs text-gray-600 line-clamp-3">
+                              <p className="text-xs text-gray-600 line-clamp-1">
                                 {article.excerpt}
                               </p>
                             )}
