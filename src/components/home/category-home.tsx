@@ -156,52 +156,52 @@ export default function CategoryHome({
 
   return (
     <main className="min-h-screen bg-gray-50">
-      {/* Modern Hero Section */}
+      {/* Compact Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-800">
         <div className="absolute inset-0 bg-black/20"></div>
-        <div className="relative mx-auto max-w-6xl px-6 py-24 text-center">
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16 text-center">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, ease: "easeOut" }}
           >
-            <h1 className="text-7xl font-black text-white mb-8 tracking-tight">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-4 sm:mb-6 tracking-tight">
               PULSE
             </h1>
-            <p className="text-2xl text-white/90 mb-12 max-w-3xl mx-auto font-light">
+            <p className="text-sm sm:text-base lg:text-lg text-white/90 mb-6 sm:mb-8 max-w-2xl mx-auto font-light">
               Breaking news, insightful analysis, and stories that matter
             </p>
             <div className="flex justify-center">
-              <div className="w-32 h-1 bg-gradient-to-r from-pink-400 to-purple-400 rounded-full"></div>
+              <div className="w-24 sm:w-32 h-1 bg-gradient-to-r from-pink-400 to-purple-400 rounded-full"></div>
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* Main Content - 3 Column Layout */}
-      <div className="mx-auto max-w-7xl px-6 py-16">
+      {/* Main Content - Responsive Grid Layout */}
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         <motion.div
           variants={stagger}
           initial="hidden"
           animate="show"
-          className="grid gap-8 lg:grid-cols-12"
+          className="grid gap-6 lg:gap-8 grid-cols-1 lg:grid-cols-4"
         >
-          {/* Left Sidebar - Latest News */}
-          <motion.aside variants={fadeUp} className="lg:col-span-3">
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-6 border-b border-gray-200 pb-3">
+          {/* Latest News - Full width on mobile, left column on desktop */}
+          <motion.section variants={fadeUp} className="lg:col-span-1 order-1 lg:order-1">
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+              <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4 sm:mb-6 border-b border-gray-200 pb-2 sm:pb-3">
                 Latest News
               </h2>
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 {[
                   ...categoryData.world.slice(0, 2),
                   ...categoryData.tech.slice(0, 2),
                   ...categoryData.business.slice(0, 2),
                 ].slice(0, 6).map((article) => (
                   <article key={article.id} className="group">
-                    <div className="border border-gray-100 rounded-lg p-4 hover:border-gray-300 transition-colors">
-                      <h3 className="font-semibold text-gray-900 mb-2 group-hover:text-indigo-600 transition-colors text-sm leading-tight">
-                        <a href={`/article/${article.slug}`}>
+                    <div className="border border-gray-100 rounded-lg p-3 hover:border-gray-300 transition-colors">
+                      <h3 className="font-medium text-gray-900 mb-1 group-hover:text-indigo-600 transition-colors text-xs sm:text-sm leading-tight">
+                        <a href={`/article/${article.slug}`} className="line-clamp-2">
                           {article.title}
                         </a>
                       </h3>
@@ -213,39 +213,39 @@ export default function CategoryHome({
                 ))}
               </div>
             </div>
-          </motion.aside>
+          </motion.section>
 
           {/* Center Content - World & Tech Sections */}
-          <motion.main variants={fadeUp} className="lg:col-span-6">
-            <div className="space-y-12">
+          <motion.main variants={fadeUp} className="lg:col-span-2 order-3 lg:order-2">
+            <div className="space-y-8 sm:space-y-12">
               {/* World Section */}
               <section>
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-bold text-gray-900"># World</h2>
-                  <a href="/world" className="text-indigo-600 hover:text-indigo-700 text-sm font-medium">
+                <div className="flex items-center justify-between mb-4 sm:mb-6">
+                  <h2 className="text-xl sm:text-2xl font-bold text-gray-900">World</h2>
+                  <a href="/world" className="text-indigo-600 hover:text-indigo-700 text-xs sm:text-sm font-medium">
                     view all
                   </a>
                 </div>
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                  {categoryData.world.slice(0, 3).map((article) => (
+                <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-2">
+                  {categoryData.world.slice(0, 4).map((article) => (
                     <article key={article.id} className="group">
                       <div className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
-                        {/* Placeholder for Image */}
+                        {/* Image placeholder */}
                         <div className="aspect-video bg-gray-100 flex items-center justify-center">
-                          <span className="text-gray-400 text-sm">Image</span>
+                          <span className="text-gray-400 text-xs sm:text-sm">Image</span>
                         </div>
-                        <div className="p-4">
-                          <h3 className="font-semibold text-gray-900 mb-2 group-hover:text-indigo-600 transition-colors text-sm leading-tight">
-                            <a href={`/article/${article.slug}`}>
+                        <div className="p-3 sm:p-4">
+                          <h3 className="font-medium text-gray-900 mb-1 sm:mb-2 group-hover:text-indigo-600 transition-colors text-xs sm:text-sm leading-tight">
+                            <a href={`/article/${article.slug}`} className="line-clamp-2">
                               {article.title}
                             </a>
                           </h3>
-                          <div className="text-xs text-gray-500 mb-2">
+                          <div className="text-xs text-gray-500 mb-1 sm:mb-2">
                             {formatDistanceToNow(new Date(article.publishedAt), { addSuffix: true })}
                           </div>
                           {article.excerpt && (
                             <p className="text-xs text-gray-600 line-clamp-2">
-                              {article.excerpt.substring(0, 80)}...
+                              {article.excerpt.substring(0, 60)}...
                             </p>
                           )}
                         </div>
@@ -257,32 +257,32 @@ export default function CategoryHome({
 
               {/* Tech Section */}
               <section>
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-bold text-gray-900"># Tech</h2>
-                  <a href="/tech" className="text-indigo-600 hover:text-indigo-700 text-sm font-medium">
+                <div className="flex items-center justify-between mb-4 sm:mb-6">
+                  <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Tech</h2>
+                  <a href="/tech" className="text-indigo-600 hover:text-indigo-700 text-xs sm:text-sm font-medium">
                     view all
                   </a>
                 </div>
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                  {categoryData.tech.slice(0, 3).map((article) => (
+                <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-2">
+                  {categoryData.tech.slice(0, 4).map((article) => (
                     <article key={article.id} className="group">
                       <div className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
-                        {/* Placeholder for Image */}
+                        {/* Image placeholder */}
                         <div className="aspect-video bg-gray-100 flex items-center justify-center">
-                          <span className="text-gray-400 text-sm">Image</span>
+                          <span className="text-gray-400 text-xs sm:text-sm">Image</span>
                         </div>
-                        <div className="p-4">
-                          <h3 className="font-semibold text-gray-900 mb-2 group-hover:text-indigo-600 transition-colors text-sm leading-tight">
-                            <a href={`/article/${article.slug}`}>
+                        <div className="p-3 sm:p-4">
+                          <h3 className="font-medium text-gray-900 mb-1 sm:mb-2 group-hover:text-indigo-600 transition-colors text-xs sm:text-sm leading-tight">
+                            <a href={`/article/${article.slug}`} className="line-clamp-2">
                               {article.title}
                             </a>
                           </h3>
-                          <div className="text-xs text-gray-500 mb-2">
+                          <div className="text-xs text-gray-500 mb-1 sm:mb-2">
                             {formatDistanceToNow(new Date(article.publishedAt), { addSuffix: true })}
                           </div>
                           {article.excerpt && (
                             <p className="text-xs text-gray-600 line-clamp-2">
-                              {article.excerpt.substring(0, 80)}...
+                              {article.excerpt.substring(0, 60)}...
                             </p>
                           )}
                         </div>
@@ -294,23 +294,27 @@ export default function CategoryHome({
             </div>
           </motion.main>
 
-          {/* Right Sidebar - Popular News */}
-          <motion.aside variants={fadeUp} className="lg:col-span-3">
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-6 border-b border-gray-200 pb-3">
+          {/* Popular News - Full width on mobile, right column on desktop */}
+          <motion.aside variants={fadeUp} className="lg:col-span-1 order-2 lg:order-3">
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+              <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4 sm:mb-6 border-b border-gray-200 pb-2 sm:pb-3">
                 Popular News
               </h2>
-              <div className="space-y-4">
-                {transformedFeatured.slice(0, 6).map((article) => (
+              <div className="space-y-3 sm:space-y-4">
+                {transformedFeatured.slice(0, 6).map((article, index) => (
                   <article key={article.id} className="group">
-                    <div className="flex gap-3 border border-gray-100 rounded-lg p-3 hover:border-gray-300 transition-colors">
+                    <div className="flex gap-2 sm:gap-3 border border-gray-100 rounded-lg p-2 sm:p-3 hover:border-gray-300 transition-colors">
+                      {/* Ranking number */}
+                      <div className="flex-shrink-0 w-6 h-6 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-xs font-bold">
+                        {index + 1}
+                      </div>
                       {/* Small image placeholder */}
-                      <div className="w-16 h-12 bg-gray-100 rounded flex-shrink-0 flex items-center justify-center">
-                        <span className="text-gray-400 text-xs">Image</span>
+                      <div className="w-12 sm:w-16 h-9 sm:h-12 bg-gray-100 rounded flex-shrink-0 flex items-center justify-center">
+                        <span className="text-gray-400 text-xs">Img</span>
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-gray-900 mb-1 group-hover:text-indigo-600 transition-colors text-sm leading-tight">
-                          <a href={`/article/${article.slug}`}>
+                        <h3 className="font-medium text-gray-900 mb-1 group-hover:text-indigo-600 transition-colors text-xs sm:text-sm leading-tight">
+                          <a href={`/article/${article.slug}`} className="line-clamp-2">
                             {article.title}
                           </a>
                         </h3>
