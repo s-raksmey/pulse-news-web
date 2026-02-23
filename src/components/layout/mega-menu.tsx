@@ -8,79 +8,10 @@ export default function MegaMenu({ activeKey }: { activeKey: string | null }) {
 
   const data = MEGA_NAV[activeKey];
   
-  // If no static configuration exists, create a dynamic one for the category
+  // If no static configuration exists, don't show a mega menu
+  // New categories should not have auto-generated topics
   if (!data) {
-    const dynamicData = {
-      root: { label: activeKey.charAt(0).toUpperCase() + activeKey.slice(1), href: `/${activeKey}` },
-      explore: {
-        title: `Explore ${activeKey.charAt(0).toUpperCase() + activeKey.slice(1)}`,
-        items: [
-          { label: "Latest", href: `/${activeKey}/latest` },
-          { label: "Popular", href: `/${activeKey}/popular` },
-          { label: "Featured", href: `/${activeKey}/featured` },
-        ],
-      },
-      shop: {
-        title: `${activeKey.charAt(0).toUpperCase() + activeKey.slice(1)} Coverage`,
-        items: [
-          { label: "Latest", href: `/${activeKey}/latest` },
-          { label: "Analysis", href: `/${activeKey}/analysis` },
-        ],
-      },
-      more: {
-        title: `More from ${activeKey.charAt(0).toUpperCase() + activeKey.slice(1)}`,
-        items: [
-          { label: "Archive", href: `/${activeKey}/archive` },
-        ],
-      },
-    };
-    
-    return (
-      <div className="absolute inset-x-0 top-full border-t border-slate-200 bg-white">
-        <div className="mx-auto max-w-7xl px-6 py-10">
-          <div className="grid gap-10 md:grid-cols-3">
-            <div>
-              <p className="mb-4 text-sm text-slate-500">{dynamicData.explore.title}</p>
-              <ul className="space-y-3">
-                {dynamicData.explore.items.map((item) => (
-                  <li key={item.href}>
-                    <Link href={item.href} className="text-lg font-semibold hover:underline">
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div>
-              <p className="mb-4 text-sm text-slate-500">{dynamicData.shop.title}</p>
-              <ul className="space-y-2">
-                {dynamicData.shop.items.map((item) => (
-                  <li key={item.href}>
-                    <Link href={item.href} className="hover:underline">
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div>
-              <p className="mb-4 text-sm text-slate-500">{dynamicData.more.title}</p>
-              <ul className="space-y-2">
-                {dynamicData.more.items.map((item) => (
-                  <li key={item.href}>
-                    <Link href={item.href} className="hover:underline">
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    return null;
   }
 
   return (
