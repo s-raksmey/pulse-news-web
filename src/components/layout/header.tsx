@@ -39,17 +39,42 @@ export default function Header({ locale }: HeaderProps) {
   const t = getTranslations(locale);
   const { getCategories } = useCategories();
 
-  // Fetch categories on component mount
+  // Fetch categories on component mount with retry logic
   useEffect(() => {
-    const fetchCategories = async () => {
+    const fetchCategories = async (retryCount = 0) => {
       try {
         setIsLoadingCategories(true);
+        console.log(`🔄 Fetching categories from GraphQL API... (attempt ${retryCount + 1})`);
+        
         const response = await getCategories();
+        console.log('📡 GraphQL Response:', response);
+        
         if (response.success && response.data?.categories) {
+          console.log('✅ Categories fetched successfully:', response.data.categories);
           setCategories(response.data.categories);
+        } else {
+          console.warn('⚠️ No categories in response or request failed:', response);
+          
+          // Retry up to 2 times if the request failed
+          if (retryCount < 2) {
+            console.log(`🔄 Retrying in 1 second... (attempt ${retryCount + 2})`);
+            setTimeout(() => fetchCategories(retryCount + 1), 1000);
+            return;
+          }
+          
+          console.log('🔄 Max retries reached, using fallback categories');
         }
       } catch (error) {
-        console.warn('Failed to fetch categories, using fallback:', error);
+        console.error('❌ Failed to fetch categories:', error);
+        
+        // Retry up to 2 times if there was an error
+        if (retryCount < 2) {
+          console.log(`🔄 Retrying in 1 second... (attempt ${retryCount + 2})`);
+          setTimeout(() => fetchCategories(retryCount + 1), 1000);
+          return;
+        }
+        
+        console.log('🔄 Max retries reached, using fallback categories');
       } finally {
         setIsLoadingCategories(false);
       }
@@ -70,6 +95,13 @@ export default function Header({ locale }: HeaderProps) {
       : FALLBACK_CATEGORIES
     )
   ];
+
+  // Debug logging for navigation items
+  console.log('🧭 Navigation items being rendered:', {
+    categoriesCount: categories.length,
+    isLoadingCategories,
+    navItems: navItems.map(item => ({ key: item.key, label: 'label' in item ? item.label : item.key }))
+  });
 
   return (
     <>
