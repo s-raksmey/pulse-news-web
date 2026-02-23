@@ -1,9 +1,12 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import TrendingWidget from "@/components/sidebar/trending-widget";
 import NewsletterSignup from "@/components/sidebar/newsletter-signup";
 import { getTranslations, type Locale } from "@/lib/i18n";
+import { useCategories } from "@/hooks/useGraphQL";
+import { ArticleCategory } from "@/types/article";
 
 interface Article {
   id: string;
@@ -59,6 +62,32 @@ export default function Sidebar({
   className = "",
 }: SidebarProps) {
   const t = getTranslations(locale);
+  const [categories, setCategories] = useState<ArticleCategory[]>([]);
+  const { getCategories } = useCategories();
+
+  // Fetch categories on component mount
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        console.log('📋 Sidebar: Fetching categories...');
+        const response = await getCategories();
+        if (response && response.categories) {
+          console.log('📋 Sidebar: Categories fetched:', response.categories);
+          setCategories(response.categories);
+        }
+      } catch (error) {
+        console.error('📋 Sidebar: Failed to fetch categories:', error);
+      }
+    };
+
+    fetchCategories();
+  }, [getCategories]);
+
+  // Generate colors for categories
+  const categoryColors = [
+    "#EF4444", "#3B82F6", "#10B981", "#8B5CF6", "#F59E0B", "#EC4899",
+    "#06B6D4", "#84CC16", "#F97316", "#8B5A2B", "#6366F1", "#D946EF"
+  ];
 
   return (
     <motion.aside
@@ -82,35 +111,30 @@ export default function Sidebar({
       )}
 
       {/* Categories Quick Navigation */}
-      <motion.div variants={itemVariants}>
-        <div className="rounded-xl bg-white p-6 shadow-lg">
-          <h3 className="mb-4 text-lg font-bold text-slate-900">{t.sidebar.categoriesTitle}</h3>
-          <div className="space-y-2">
-            {[
-              { name: t.nav.world, slug: "world", color: "#EF4444" },
-              { name: t.topics.technology, slug: "tech", color: "#3B82F6" },
-              { name: t.nav.business, slug: "business", color: "#10B981" },
-              { name: t.nav.politics, slug: "politics", color: "#8B5CF6" },
-              { name: t.nav.sports, slug: "sports", color: "#F59E0B" },
-              { name: t.nav.culture, slug: "culture", color: "#EC4899" },
-            ].map((category) => (
-              <a
-                key={category.slug}
-                href={`/${category.slug}`}
-                className="flex items-center gap-3 rounded-lg p-2 transition-colors hover:bg-slate-50"
-              >
-                <div
-                  className="h-3 w-3 rounded-full"
-                  style={{ backgroundColor: category.color }}
-                />
-                <span className="text-sm font-medium text-slate-700">
-                  {category.name}
-                </span>
-              </a>
-            ))}
+      {categories.length > 0 && (
+        <motion.div variants={itemVariants}>
+          <div className="rounded-xl bg-white p-6 shadow-lg">
+            <h3 className="mb-4 text-lg font-bold text-slate-900">{t.sidebar.categoriesTitle}</h3>
+            <div className="space-y-2">
+              {categories.map((category, index) => (
+                <a
+                  key={category.slug}
+                  href={`/${category.slug}`}
+                  className="flex items-center gap-3 rounded-lg p-2 transition-colors hover:bg-slate-50"
+                >
+                  <div
+                    className="h-3 w-3 rounded-full"
+                    style={{ backgroundColor: categoryColors[index % categoryColors.length] }}
+                  />
+                  <span className="text-sm font-medium text-slate-700">
+                    {category.name}
+                  </span>
+                </a>
+              ))}
+            </div>
           </div>
-        </div>
-      </motion.div>
+        </motion.div>
+      )}
 
       {/* Social Media Links */}
       <motion.div variants={itemVariants}>

@@ -17,15 +17,7 @@ const STATIC_NAV_ITEMS = [
   { key: "home", href: "/" },
 ];
 
-// Fallback categories in case API fails
-const FALLBACK_CATEGORIES = [
-  { key: "world", href: "/world" },
-  { key: "tech", href: "/tech" },
-  { key: "business", href: "/business" },
-  { key: "politics", href: "/politics" },
-  { key: "sports", href: "/sports" },
-  { key: "culture", href: "/culture" },
-];
+// No fallback categories - only show dynamic categories from admin
 
 type HeaderProps = {
   locale: "en" | "km";
@@ -63,7 +55,8 @@ export default function Header({ locale }: HeaderProps) {
             return;
           }
           
-          console.log('🔄 Max retries reached, using fallback categories');
+          console.log('❌ Max retries reached, no categories will be shown');
+          setCategories([]); // Explicitly set empty array instead of fallback
         }
       } catch (error) {
         console.error('❌ Failed to fetch categories:', error);
@@ -75,7 +68,8 @@ export default function Header({ locale }: HeaderProps) {
           return;
         }
         
-        console.log('🔄 Max retries reached, using fallback categories');
+        console.log('❌ Max retries reached, no categories will be shown');
+        setCategories([]); // Explicitly set empty array instead of fallback
       } finally {
         setIsLoadingCategories(false);
       }
@@ -84,17 +78,14 @@ export default function Header({ locale }: HeaderProps) {
     fetchCategories();
   }, [getCategories]);
 
-  // Combine static items with dynamic categories
+  // Combine static items with dynamic categories (no fallback)
   const navItems = [
     ...STATIC_NAV_ITEMS,
-    ...(categories.length > 0 
-      ? categories.map(category => ({
-          key: category.slug,
-          href: `/${category.slug}`,
-          label: category.name
-        }))
-      : FALLBACK_CATEGORIES
-    )
+    ...categories.map(category => ({
+      key: category.slug,
+      href: `/${category.slug}`,
+      label: category.name
+    }))
   ];
 
   // Debug logging for navigation items
