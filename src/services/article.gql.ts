@@ -13,6 +13,41 @@ export const Q_CATEGORIES = /* GraphQL */ `
 `;
 
 /* =========================
+   Topics
+========================= */
+
+export const Q_TOPICS_BY_CATEGORY = /* GraphQL */ `
+  query TopicsByCategory($categorySlug: String!) {
+    topicsByCategory(categorySlug: $categorySlug) {
+      id
+      slug
+      title
+      description
+      category {
+        id
+        name
+        slug
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const Q_ALL_CATEGORIES_WITH_TOPICS = /* GraphQL */ `
+  query AllCategoriesWithTopics {
+    categories {
+      id
+      name
+      slug
+      description
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+/* =========================
    Articles list
 ========================= */
 

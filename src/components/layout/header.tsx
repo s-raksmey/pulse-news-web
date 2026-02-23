@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ChevronDown, Search, Menu } from "lucide-react";
 import MegaMenu from "@/components/layout/mega-menu";
+import DynamicMegaMenu from "@/components/layout/dynamic-mega-menu";
 import LanguageToggle from "@/components/layout/language-toggle";
 import MobileMenu from "@/components/layout/mobile-menu";
 import SearchBar from "@/components/layout/search-bar";
@@ -169,8 +170,11 @@ export default function Header({ locale }: HeaderProps) {
           </div>
         </div>
 
-        {/* Dropdown (keep style) */}
-        <MegaMenu activeKey={active} />
+        {/* Dynamic Mega Menu with Topics */}
+        <DynamicMegaMenu 
+          activeKey={active} 
+          categoryName={categories.find(cat => cat.slug === active)?.name}
+        />
       </header>
 
       {/* Mobile Menu */}
