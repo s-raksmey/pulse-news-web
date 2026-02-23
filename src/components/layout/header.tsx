@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ChevronDown, Search, Menu } from "lucide-react";
 import MegaMenu from "@/components/layout/mega-menu";
@@ -8,9 +8,16 @@ import LanguageToggle from "@/components/layout/language-toggle";
 import MobileMenu from "@/components/layout/mobile-menu";
 import SearchBar from "@/components/layout/search-bar";
 import { getTranslations } from "@/lib/i18n";
+import { useCategories } from "@/hooks/useGraphQL";
+import { ArticleCategory } from "@/types/article";
 
-const NAV_ITEMS = [
+// Static navigation items (home stays static)
+const STATIC_NAV_ITEMS = [
   { key: "home", href: "/" },
+];
+
+// Fallback categories in case API fails
+const FALLBACK_CATEGORIES = [
   { key: "world", href: "/world" },
   { key: "tech", href: "/tech" },
   { key: "business", href: "/business" },
@@ -27,7 +34,42 @@ export default function Header({ locale }: HeaderProps) {
   const [active, setActive] = useState<string | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [categories, setCategories] = useState<ArticleCategory[]>([]);
+  const [isLoadingCategories, setIsLoadingCategories] = useState(true);
   const t = getTranslations(locale);
+  const { getCategories } = useCategories();
+
+  // Fetch categories on component mount
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        setIsLoadingCategories(true);
+        const response = await getCategories();
+        if (response.success && response.data?.categories) {
+          setCategories(response.data.categories);
+        }
+      } catch (error) {
+        console.warn('Failed to fetch categories, using fallback:', error);
+      } finally {
+        setIsLoadingCategories(false);
+      }
+    };
+
+    fetchCategories();
+  }, [getCategories]);
+
+  // Combine static items with dynamic categories
+  const navItems = [
+    ...STATIC_NAV_ITEMS,
+    ...(categories.length > 0 
+      ? categories.map(category => ({
+          key: category.slug,
+          href: `/${category.slug}`,
+          label: category.name
+        }))
+      : FALLBACK_CATEGORIES
+    )
+  ];
 
   return (
     <>
@@ -45,8 +87,10 @@ export default function Header({ locale }: HeaderProps) {
           </div>
 
           <nav className="hidden flex-1 flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm font-medium text-slate-800 md:flex lg:gap-x-6">
-            {NAV_ITEMS.map((item) => {
+            {navItems.map((item) => {
               const hasDropdown = item.key !== "home";
+              const displayName = 'label' in item ? item.label : t.nav[item.key as keyof typeof t.nav];
+              
               return (
                 <Link
                   key={item.key}
@@ -54,7 +98,7 @@ export default function Header({ locale }: HeaderProps) {
                   onMouseEnter={() => setActive(hasDropdown ? item.key : null)}
                   className="flex items-center gap-1 leading-tight text-slate-800 hover:text-[#385CF5]"
                 >
-                  {t.nav[item.key as keyof typeof t.nav]}
+                  {displayName}
                   {hasDropdown && (
                     <ChevronDown
                       className={`h-3.5 w-3.5 transition-transform ${
