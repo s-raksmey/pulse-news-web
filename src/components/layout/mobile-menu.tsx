@@ -5,6 +5,8 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ChevronRight, Home, Globe, Laptop, Briefcase, Vote, Trophy, Palette } from "lucide-react";
 import { getTranslations, type Locale } from "@/lib/i18n";
+import { useCategories } from "@/hooks/useGraphQL";
+import { ArticleCategory } from "@/types/article";
 
 interface MobileMenuProps {
   locale: Locale;
@@ -12,15 +14,13 @@ interface MobileMenuProps {
   onClose: () => void;
 }
 
-const NAV_ITEMS = [
+// Static navigation items (only home)
+const STATIC_NAV_ITEMS = [
   { key: "home", href: "/", icon: Home },
-  { key: "world", href: "/world", icon: Globe },
-  { key: "tech", href: "/tech", icon: Laptop },
-  { key: "business", href: "/business", icon: Briefcase },
-  { key: "politics", href: "/politics", icon: Vote },
-  { key: "sports", href: "/sports", icon: Trophy },
-  { key: "culture", href: "/culture", icon: Palette },
 ];
+
+// Default icon for dynamic categories
+const DEFAULT_CATEGORY_ICON = Globe;
 
 const menuVariants = {
   closed: {
@@ -55,6 +55,29 @@ const itemVariants = {
 
 export default function MobileMenu({ locale, isOpen, onClose }: MobileMenuProps) {
   const t = getTranslations(locale);
+  const [categories, setCategories] = useState<ArticleCategory[]>([]);
+  const { getCategories } = useCategories();
+
+  // Fetch categories on component mount
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        console.log('📱 Mobile Menu: Fetching categories...');
+        const response = await getCategories();
+        if (response && response.categories) {
+          console.log('📱 Mobile Menu: Categories fetched:', response.categories);
+          setCategories(response.categories);
+        }
+      } catch (error) {
+        console.error('📱 Mobile Menu: Failed to fetch categories:', error);
+      }
+    };
+
+    if (isOpen) {
+      fetchCategories();
+    }
+  }, [isOpen, getCategories]);
+
   // Prevent body scroll when menu is open
   useEffect(() => {
     if (isOpen) {
@@ -67,6 +90,17 @@ export default function MobileMenu({ locale, isOpen, onClose }: MobileMenuProps)
       document.body.style.overflow = "unset";
     };
   }, [isOpen]);
+
+  // Combine static items with dynamic categories
+  const navItems = [
+    ...STATIC_NAV_ITEMS,
+    ...categories.map(category => ({
+      key: category.slug,
+      href: `/${category.slug}`,
+      label: category.name,
+      icon: DEFAULT_CATEGORY_ICON
+    }))
+  ];
 
   return (
     <AnimatePresence>
@@ -106,8 +140,9 @@ export default function MobileMenu({ locale, isOpen, onClose }: MobileMenuProps)
             {/* Navigation */}
             <nav className="flex-1 overflow-y-auto p-6">
               <div className="space-y-2">
-                {NAV_ITEMS.map((item, index) => {
+                {navItems.map((item, index) => {
                   const Icon = item.icon;
+                  const displayName = 'label' in item ? item.label : t.nav[item.key as keyof typeof t.nav];
                   return (
                     <motion.div
                       key={item.key}
@@ -122,7 +157,7 @@ export default function MobileMenu({ locale, isOpen, onClose }: MobileMenuProps)
                         className="flex items-center gap-4 rounded-lg p-3 text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-900"
                       >
                         <Icon className="h-5 w-5" />
-                        <span className="font-medium">{t.nav[item.key as keyof typeof t.nav]}</span>
+                        <span className="font-medium">{displayName}</span>
                         <ChevronRight className="ml-auto h-4 w-4 text-slate-400" />
                       </Link>
                     </motion.div>
@@ -136,7 +171,7 @@ export default function MobileMenu({ locale, isOpen, onClose }: MobileMenuProps)
               {/* Additional Links */}
               <div className="space-y-2">
                 <motion.div
-                  custom={NAV_ITEMS.length}
+                  custom={navItems.length}
                   variants={itemVariants}
                   initial="closed"
                   animate="open"
@@ -156,7 +191,7 @@ export default function MobileMenu({ locale, isOpen, onClose }: MobileMenuProps)
             {/* Footer */}
             <div className="border-t border-slate-200 p-6">
               <motion.div
-                custom={NAV_ITEMS.length + 1}
+                custom={navItems.length + 1}
                 variants={itemVariants}
                 initial="closed"
                 animate="open"
