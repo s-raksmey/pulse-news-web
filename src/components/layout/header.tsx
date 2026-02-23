@@ -29,6 +29,7 @@ export default function Header({ locale }: HeaderProps) {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [categories, setCategories] = useState<ArticleCategory[]>([]);
   const [isLoadingCategories, setIsLoadingCategories] = useState(true);
+  const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null);
   const t = getTranslations(locale);
   const { getCategories } = useCategories();
 
@@ -78,6 +79,32 @@ export default function Header({ locale }: HeaderProps) {
     fetchCategories();
   }, [getCategories]);
 
+  // Helper functions for hover management
+  const handleMouseEnter = (itemKey: string) => {
+    if (hoverTimeout) {
+      clearTimeout(hoverTimeout);
+      setHoverTimeout(null);
+    }
+    const hasDropdown = itemKey !== "home";
+    setActive(hasDropdown ? itemKey : null);
+  };
+
+  const handleMouseLeave = () => {
+    const timeout = setTimeout(() => {
+      setActive(null);
+    }, 150); // Small delay to allow moving to dropdown
+    setHoverTimeout(timeout);
+  };
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (hoverTimeout) {
+        clearTimeout(hoverTimeout);
+      }
+    };
+  }, [hoverTimeout]);
+
   // Combine static items with dynamic categories (no fallback)
   const navItems = [
     ...STATIC_NAV_ITEMS,
@@ -97,7 +124,7 @@ export default function Header({ locale }: HeaderProps) {
 
   return (
     <>
-      <header className="relative z-50 border-b bg-white" onMouseLeave={() => setActive(null)}>
+      <header className="relative z-50 border-b bg-white" onMouseLeave={handleMouseLeave}>
         <div className="mx-auto flex min-h-16 max-w-7xl items-center gap-4 px-4 sm:px-6">
           <div className="flex shrink-0 items-center">
             <Link href="/" className="flex items-center" aria-label="Pulse News Home">
@@ -119,8 +146,8 @@ export default function Header({ locale }: HeaderProps) {
                 <Link
                   key={item.key}
                   href={item.href}
-                  onMouseEnter={() => setActive(hasDropdown ? item.key : null)}
-                  className="flex items-center gap-1 leading-tight text-slate-800 hover:text-[#385CF5]"
+                  onMouseEnter={() => handleMouseEnter(item.key)}
+                  className="flex items-center gap-1 leading-tight text-slate-800 hover:text-[#385CF5] py-2"
                 >
                   {displayName}
                   {hasDropdown && (
@@ -165,6 +192,13 @@ export default function Header({ locale }: HeaderProps) {
         <DynamicMegaMenu 
           activeKey={active} 
           categoryName={categories.find(cat => cat.slug === active)?.name}
+          onMouseEnter={() => {
+            if (hoverTimeout) {
+              clearTimeout(hoverTimeout);
+              setHoverTimeout(null);
+            }
+          }}
+          onMouseLeave={handleMouseLeave}
         />
       </header>
 

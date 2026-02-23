@@ -20,9 +20,11 @@ interface Topic {
 interface DynamicMegaMenuProps {
   activeKey: string | null;
   categoryName?: string;
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
 }
 
-export default function DynamicMegaMenu({ activeKey, categoryName }: DynamicMegaMenuProps) {
+export default function DynamicMegaMenu({ activeKey, categoryName, onMouseEnter, onMouseLeave }: DynamicMegaMenuProps) {
   const [topics, setTopics] = useState<Topic[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -62,21 +64,24 @@ export default function DynamicMegaMenu({ activeKey, categoryName }: DynamicMega
 
   if (!activeKey || activeKey === "home") return null;
 
-  // Don't show mega menu if no topics are available
-  if (!isLoading && topics.length === 0) {
-    return null;
-  }
-
   const displayName = categoryName || activeKey.charAt(0).toUpperCase() + activeKey.slice(1);
 
   return (
-    <div className="absolute inset-x-0 top-full border-t border-slate-200 bg-white shadow-lg">
+    <div 
+      className="absolute inset-x-0 top-full border-t border-slate-200 bg-white shadow-lg"
+      onMouseEnter={() => {
+        onMouseEnter?.();
+      }}
+      onMouseLeave={() => {
+        onMouseLeave?.();
+      }}
+    >
       <div className="mx-auto max-w-7xl px-6 py-8">
         {isLoading ? (
           <div className="flex items-center justify-center py-8">
             <div className="text-slate-500">Loading topics...</div>
           </div>
-        ) : (
+        ) : topics.length > 0 ? (
           <div className="grid gap-8 md:grid-cols-3">
             {/* Topics Section */}
             <div>
@@ -164,17 +169,66 @@ export default function DynamicMegaMenu({ activeKey, categoryName }: DynamicMega
                     Featured Stories
                   </Link>
                 </li>
-                {topics.length > 0 && (
-                  <li>
-                    <Link 
-                      href={`/${activeKey}`} 
-                      className="text-slate-700 hover:text-blue-600 transition-colors"
-                    >
-                      View All Topics
-                    </Link>
-                  </li>
-                )}
+                <li>
+                  <Link 
+                    href={`/${activeKey}`} 
+                    className="text-slate-700 hover:text-blue-600 transition-colors"
+                  >
+                    View All Topics
+                  </Link>
+                </li>
               </ul>
+            </div>
+          </div>
+        ) : (
+          // Show basic dropdown when no topics are available
+          <div className="grid gap-8 md:grid-cols-2">
+            {/* Category Section */}
+            <div>
+              <p className="mb-4 text-sm font-medium text-slate-500 uppercase tracking-wide">
+                Explore {displayName}
+              </p>
+              <ul className="space-y-3">
+                <li>
+                  <Link 
+                    href={`/${activeKey}`} 
+                    className="text-lg font-semibold text-slate-900 hover:text-blue-600 transition-colors"
+                  >
+                    All {displayName}
+                  </Link>
+                </li>
+                <li>
+                  <Link 
+                    href={`/${activeKey}/latest`} 
+                    className="text-lg font-semibold text-slate-900 hover:text-blue-600 transition-colors"
+                  >
+                    Latest Articles
+                  </Link>
+                </li>
+                <li>
+                  <Link 
+                    href={`/${activeKey}/featured`} 
+                    className="text-lg font-semibold text-slate-900 hover:text-blue-600 transition-colors"
+                  >
+                    Featured Stories
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* Info Section */}
+            <div>
+              <p className="mb-4 text-sm font-medium text-slate-500 uppercase tracking-wide">
+                About This Category
+              </p>
+              <div className="space-y-2">
+                <p className="text-slate-600">
+                  Discover the latest news and stories in {displayName.toLowerCase()}.
+                </p>
+                <p className="text-sm text-slate-500">
+                  Topics will appear here as they are created by our editorial team.
+                </p>
+              </div>
             </div>
           </div>
         )}
@@ -182,4 +236,3 @@ export default function DynamicMegaMenu({ activeKey, categoryName }: DynamicMega
     </div>
   );
 }
-
