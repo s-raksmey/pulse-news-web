@@ -20,9 +20,9 @@ export default function CategoriesDebug() {
         const response = await getCategories();
         console.log('🔍 Debug: Full response:', response);
         
-        if (response.success && response.data?.categories) {
-          setCategories(response.data.categories);
-          console.log('🔍 Debug: Categories set:', response.data.categories);
+        if (response && response.categories) {
+          setCategories(response.categories);
+          console.log('🔍 Debug: Categories set:', response.categories);
         } else {
           setError('No categories found in response');
           console.log('🔍 Debug: No categories found');
