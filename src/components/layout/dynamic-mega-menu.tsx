@@ -181,53 +181,22 @@ export default function DynamicMegaMenu({ activeKey, categoryName, onMouseEnter,
             </div>
           </div>
         ) : (
-          // Show basic dropdown when no topics are available
-          <div className="grid gap-8 md:grid-cols-2">
-            {/* Category Section */}
-            <div>
-              <p className="mb-4 text-sm font-medium text-slate-500 uppercase tracking-wide">
-                Explore {displayName}
+          // Show clean empty state when no topics are available
+          <div className="text-center py-8">
+            <div className="space-y-3">
+              <p className="text-slate-600 text-lg">
+                No topics available yet for {displayName}
               </p>
-              <ul className="space-y-3">
-                <li>
-                  <Link 
-                    href={`/${activeKey}`} 
-                    className="text-lg font-semibold text-slate-900 hover:text-blue-600 transition-colors"
-                  >
-                    All {displayName}
-                  </Link>
-                </li>
-                <li>
-                  <Link 
-                    href={`/${activeKey}/latest`} 
-                    className="text-lg font-semibold text-slate-900 hover:text-blue-600 transition-colors"
-                  >
-                    Latest Articles
-                  </Link>
-                </li>
-                <li>
-                  <Link 
-                    href={`/${activeKey}/featured`} 
-                    className="text-lg font-semibold text-slate-900 hover:text-blue-600 transition-colors"
-                  >
-                    Featured Stories
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            {/* Info Section */}
-            <div>
-              <p className="mb-4 text-sm font-medium text-slate-500 uppercase tracking-wide">
-                About This Category
+              <p className="text-sm text-slate-500">
+                Topics will appear here as they are created by our editorial team.
               </p>
-              <div className="space-y-2">
-                <p className="text-slate-600">
-                  Discover the latest news and stories in {displayName.toLowerCase()}.
-                </p>
-                <p className="text-sm text-slate-500">
-                  Topics will appear here as they are created by our editorial team.
-                </p>
+              <div className="pt-4">
+                <Link 
+                  href={`/${activeKey}`} 
+                  className="inline-flex items-center px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors"
+                >
+                  Browse {displayName} Articles →
+                </Link>
               </div>
             </div>
           </div>
