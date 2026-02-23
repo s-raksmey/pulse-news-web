@@ -49,9 +49,9 @@ export default function Header({ locale }: HeaderProps) {
         const response = await getCategories();
         console.log('📡 GraphQL Response:', response);
         
-        if (response.success && response.data?.categories) {
-          console.log('✅ Categories fetched successfully:', response.data.categories);
-          setCategories(response.data.categories);
+        if (response && response.categories) {
+          console.log('✅ Categories fetched successfully:', response.categories);
+          setCategories(response.categories);
         } else {
           console.warn('⚠️ No categories in response or request failed:', response);
           
