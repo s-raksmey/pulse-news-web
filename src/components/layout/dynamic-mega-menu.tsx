@@ -82,30 +82,14 @@ export default function DynamicMegaMenu({ activeKey, categoryName, onMouseEnter,
             <div className="text-slate-500">Loading topics...</div>
           </div>
         ) : topics.length > 0 ? (
-          <div className="grid gap-8 md:grid-cols-3">
-            {/* Topics Section */}
+          <div className="grid gap-8 md:grid-cols-2">
+            {/* Admin-Created Topics Only */}
             <div>
               <p className="mb-4 text-sm font-medium text-slate-500 uppercase tracking-wide">
-                Explore {displayName}
+                {displayName} Topics
               </p>
               <ul className="space-y-3">
-                <li>
-                  <Link 
-                    href={`/${activeKey}`} 
-                    className="text-lg font-semibold text-slate-900 hover:text-blue-600 transition-colors"
-                  >
-                    All {displayName}
-                  </Link>
-                </li>
-                <li>
-                  <Link 
-                    href={`/${activeKey}/latest`} 
-                    className="text-lg font-semibold text-slate-900 hover:text-blue-600 transition-colors"
-                  >
-                    Latest
-                  </Link>
-                </li>
-                {topics.slice(0, 4).map((topic) => (
+                {topics.slice(0, 6).map((topic) => (
                   <li key={topic.id}>
                     <Link 
                       href={`/${activeKey}/${topic.slug}`} 
@@ -118,14 +102,14 @@ export default function DynamicMegaMenu({ activeKey, categoryName, onMouseEnter,
               </ul>
             </div>
 
-            {/* More Topics Section (if we have more than 4) */}
-            {topics.length > 4 && (
+            {/* More Topics Section (if we have more than 6) */}
+            {topics.length > 6 && (
               <div>
                 <p className="mb-4 text-sm font-medium text-slate-500 uppercase tracking-wide">
                   More Topics
                 </p>
                 <ul className="space-y-2">
-                  {topics.slice(4, 8).map((topic) => (
+                  {topics.slice(6, 12).map((topic) => (
                     <li key={topic.id}>
                       <Link 
                         href={`/${activeKey}/${topic.slug}`} 
@@ -136,49 +120,20 @@ export default function DynamicMegaMenu({ activeKey, categoryName, onMouseEnter,
                     </li>
                   ))}
                 </ul>
+                
+                {/* Show "View All" link only if there are many topics */}
+                {topics.length > 12 && (
+                  <div className="pt-3 mt-3 border-t border-slate-200">
+                    <Link 
+                      href={`/${activeKey}`} 
+                      className="text-sm text-blue-600 hover:text-blue-700 transition-colors"
+                    >
+                      View all {topics.length} topics →
+                    </Link>
+                  </div>
+                )}
               </div>
             )}
-
-            {/* Quick Links Section */}
-            <div>
-              <p className="mb-4 text-sm font-medium text-slate-500 uppercase tracking-wide">
-                Quick Links
-              </p>
-              <ul className="space-y-2">
-                <li>
-                  <Link 
-                    href={`/${activeKey}/latest`} 
-                    className="text-slate-700 hover:text-blue-600 transition-colors"
-                  >
-                    Latest News
-                  </Link>
-                </li>
-                <li>
-                  <Link 
-                    href={`/${activeKey}/trending`} 
-                    className="text-slate-700 hover:text-blue-600 transition-colors"
-                  >
-                    Trending
-                  </Link>
-                </li>
-                <li>
-                  <Link 
-                    href={`/${activeKey}/featured`} 
-                    className="text-slate-700 hover:text-blue-600 transition-colors"
-                  >
-                    Featured Stories
-                  </Link>
-                </li>
-                <li>
-                  <Link 
-                    href={`/${activeKey}`} 
-                    className="text-slate-700 hover:text-blue-600 transition-colors"
-                  >
-                    View All Topics
-                  </Link>
-                </li>
-              </ul>
-            </div>
           </div>
         ) : (
           // Show clean empty state when no topics are available
