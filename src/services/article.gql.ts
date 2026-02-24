@@ -12,19 +12,6 @@ export const Q_CATEGORIES = /* GraphQL */ `
   }
 `;
 
-export const Q_CATEGORY_BY_SLUG = /* GraphQL */ `
-  query CategoryBySlug($slug: String!) {
-    categoryBySlug(slug: $slug) {
-      id
-      name
-      slug
-      description
-      createdAt
-      updatedAt
-    }
-  }
-`;
-
 /* =========================
    Topics
 ========================= */

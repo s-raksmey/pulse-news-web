@@ -2,7 +2,7 @@
 import { notFound } from "next/navigation";
 import CategoryClient from "@/components/category/category";
 import { getGqlClient } from "@/services/graphql-client";
-import { Q_LATEST_BY_CATEGORY, Q_CATEGORY_BY_SLUG } from "@/services/article.gql";
+import { Q_LATEST_BY_CATEGORY, Q_CATEGORIES } from "@/services/article.gql";
 
 export const revalidate = 60;
 
@@ -116,12 +116,11 @@ export default async function CategoryPage({
   
   const client = getGqlClient();
   
-  // Fetch category data to validate it exists and get proper name
-  const categoryResponse = await client.request(Q_CATEGORY_BY_SLUG, {
-    slug: category,
-  });
+  // Fetch all categories and find the one matching our slug
+  const categoriesResponse = await client.request(Q_CATEGORIES);
+  const categories = categoriesResponse?.categories ?? [];
   
-  const categoryData = categoryResponse?.categoryBySlug;
+  const categoryData = categories.find((cat: any) => cat.slug === category);
   if (!categoryData) {
     notFound();
   }
