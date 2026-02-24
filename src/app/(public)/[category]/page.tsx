@@ -2,8 +2,7 @@
 import { notFound } from "next/navigation";
 import CategoryClient from "@/components/category/category";
 import { getGqlClient } from "@/services/graphql-client";
-import { Q_LATEST_BY_CATEGORY } from "@/services/article.gql";
-import { isValidSection } from "@/config/editorial";
+import { Q_LATEST_BY_CATEGORY, Q_CATEGORY_BY_SLUG } from "@/services/article.gql";
 
 export const revalidate = 60;
 
@@ -114,9 +113,20 @@ export default async function CategoryPage({
   params: Promise<{ category: string }>;
 }) {
   const { category } = await params;
-  if (!isValidSection(category)) notFound();
-
+  
   const client = getGqlClient();
+  
+  // Fetch category data to validate it exists and get proper name
+  const categoryResponse = await client.request(Q_CATEGORY_BY_SLUG, {
+    slug: category,
+  });
+  
+  const categoryData = categoryResponse?.categoryBySlug;
+  if (!categoryData) {
+    notFound();
+  }
+
+  // Fetch articles for this category
   const articlesResponse = await client.request(Q_LATEST_BY_CATEGORY, {
     categorySlug: category,
     limit: 20,
@@ -147,6 +157,7 @@ export default async function CategoryPage({
   return (
     <CategoryClient
       category={category}
+      categoryData={categoryData}
       articles={articlesWithMedia}
     />
   );

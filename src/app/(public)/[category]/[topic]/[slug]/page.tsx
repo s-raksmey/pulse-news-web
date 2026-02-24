@@ -2,8 +2,7 @@
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { getGqlClient } from "@/services/graphql-client";
-import { Q_ARTICLE_BY_SLUG } from "@/services/article.gql";
-import { isValidSection } from "@/config/editorial";
+import { Q_ARTICLE_BY_SLUG, Q_CATEGORY_BY_SLUG } from "@/services/article.gql";
 import ArticlePageClient from "@/components/article/article";
 
 export const revalidate = 60;
@@ -103,10 +102,16 @@ export default async function ArticlePage({
 }) {
   const { category, topic, slug } = await params;
 
-  // ✅ validate section only
-  if (!isValidSection(category)) notFound();
-
   const client = getGqlClient();
+  
+  // Validate category exists in database
+  const categoryResponse = await client.request(Q_CATEGORY_BY_SLUG, {
+    slug: category,
+  });
+  
+  if (!categoryResponse?.categoryBySlug) {
+    notFound();
+  }
   
   try {
     const result = await client.request(Q_ARTICLE_BY_SLUG, { slug });
