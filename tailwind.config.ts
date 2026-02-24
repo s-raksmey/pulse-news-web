@@ -10,6 +10,10 @@ const config: Config = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      animation: {
+        'pulse-delay-2': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) 2s infinite',
+        'pulse-delay-4': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) 4s infinite',
+      },
       colors: {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
