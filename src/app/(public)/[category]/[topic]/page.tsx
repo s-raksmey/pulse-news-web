@@ -2,8 +2,7 @@
 import { notFound } from "next/navigation";
 import TopicClient from "@/components/topic/topic";
 import { getGqlClient } from "@/services/graphql-client";
-import { Q_ARTICLES_BY_TOPIC, Q_TOPIC_BY_SLUG, Q_LATEST_BY_CATEGORY } from "@/services/article.gql";
-import { isValidSection } from "@/config/editorial";
+import { Q_ARTICLES_BY_TOPIC, Q_TOPIC_BY_SLUG, Q_LATEST_BY_CATEGORY, Q_CATEGORY_BY_SLUG } from "@/services/article.gql";
 
 export const revalidate = 60;
 
@@ -13,9 +12,17 @@ export default async function TopicPage({
   params: Promise<{ category: string; topic: string }>;
 }) {
   const { category, topic } = await params;
-  if (!isValidSection(category)) notFound();
-
+  
   const client = getGqlClient();
+  
+  // Validate category exists in database
+  const categoryResponse = await client.request(Q_CATEGORY_BY_SLUG, {
+    slug: category,
+  });
+  
+  if (!categoryResponse?.categoryBySlug) {
+    notFound();
+  }
 
   try {
     const isLatest = topic === "latest";

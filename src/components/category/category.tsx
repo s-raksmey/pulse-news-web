@@ -26,6 +26,15 @@ type Article = {
   firstParagraph: string | null;
 };
 
+type CategoryData = {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
 /* =========================
    Utils
 ========================= */
@@ -117,9 +126,11 @@ function ArticleSkeleton() {
 ========================= */
 export default function CategoryClient({
   category,
+  categoryData,
   articles,
 }: {
   category: string;
+  categoryData: CategoryData;
   articles?: Article[];
 }) {
   /* LOADING */
@@ -140,7 +151,7 @@ export default function CategoryClient({
         <Breadcrumb
           items={[
             { label: "Home", href: "/" },
-            { label: titleCase(category) },
+            { label: categoryData.name },
           ]}
         />
         <EmptyState
@@ -173,7 +184,7 @@ export default function CategoryClient({
         <Breadcrumb
           items={[
             { label: "Home", href: "/" },
-            { label: titleCase(category) },
+            { label: categoryData.name },
           ]}
         />
 
