@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, easeOut } from "framer-motion";
 import { useState, useEffect } from "react";
 import { Article } from "@/types/article";
 import { getTranslations, type Locale } from "@/lib/i18n";
@@ -30,7 +30,7 @@ const fadeUp = {
   show: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5, ease: [0, 0, 0.58, 1] },
+    transition: { duration: 0.5, ease: easeOut },
   },
 };
 

@@ -5,7 +5,6 @@ import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import { fontKhmerDigital } from "@/lib/font";
 import BreakingNewsBar from "@/components/layout/breaking-news-bar";
-import CategoriesDebug from "@/components/debug/categories-debug";
 
 export const metadata: Metadata = {
   title: process.env.NEXT_PUBLIC_SITE_NAME || "Pulse News",
@@ -28,7 +27,6 @@ export default async function RootLayout({
         <BreakingNewsBar locale={locale} />
         <div className="min-h-[calc(100vh-140px)]">{children}</div>
         <Footer locale={locale} />
-        <CategoriesDebug />
       </body>
     </html>
   );

@@ -132,7 +132,7 @@ export default function ArticlePageClient({
         items={[
           { label: "Home", href: "/" },
           { label: titleCase(category), href: `/${category}` },
-          { label: titleCase(topic), href: `/${category}/${topic}` },
+          { label: topic, href: `/${category}/${topic}` },
           { label: article.title },
         ]}
       />

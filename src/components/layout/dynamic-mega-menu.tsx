@@ -92,7 +92,7 @@ export default function DynamicMegaMenu({ activeKey, categoryName, onMouseEnter,
                 {topics.slice(0, 6).map((topic) => (
                   <li key={topic.id}>
                     <Link 
-                      href={`/${activeKey}/${topic.slug}`} 
+                      href={`/${activeKey}/${topic.slug.toLowerCase()}`} 
                       className="text-lg font-semibold text-slate-900 hover:text-blue-600 transition-colors"
                     >
                       {topic.title}
@@ -112,7 +112,7 @@ export default function DynamicMegaMenu({ activeKey, categoryName, onMouseEnter,
                   {topics.slice(6, 12).map((topic) => (
                     <li key={topic.id}>
                       <Link 
-                        href={`/${activeKey}/${topic.slug}`} 
+                        href={`/${activeKey}/${topic.slug.toLowerCase()}`} 
                         className="text-slate-700 hover:text-blue-600 transition-colors"
                       >
                         {topic.title}
