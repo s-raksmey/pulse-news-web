@@ -2,7 +2,7 @@
 import { notFound } from "next/navigation";
 import TopicClient from "@/components/topic/topic";
 import { getGqlClient } from "@/services/graphql-client";
-import { Q_ARTICLES_BY_TOPIC, Q_TOPIC_BY_SLUG, Q_LATEST_BY_CATEGORY, Q_CATEGORY_BY_SLUG } from "@/services/article.gql";
+import { Q_ARTICLES_BY_TOPIC, Q_TOPIC_BY_SLUG, Q_LATEST_BY_CATEGORY, Q_CATEGORIES } from "@/services/article.gql";
 
 export const revalidate = 60;
 
@@ -16,11 +16,11 @@ export default async function TopicPage({
   const client = getGqlClient();
   
   // Validate category exists in database
-  const categoryResponse = await client.request(Q_CATEGORY_BY_SLUG, {
-    slug: category,
-  });
+  const categoriesResponse = await client.request(Q_CATEGORIES);
+  const categories = categoriesResponse?.categories ?? [];
   
-  if (!categoryResponse?.categoryBySlug) {
+  const categoryExists = categories.some((cat: any) => cat.slug === category);
+  if (!categoryExists) {
     notFound();
   }
 
