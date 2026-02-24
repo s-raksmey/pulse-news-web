@@ -213,7 +213,7 @@ export default function TopicClient({
           items={[
             { label: "Home", href: "/" },
             { label: topicMeta?.category.name || titleCase(category), href: `/${category}` },
-            { label: titleCase(topic) },
+            { label: topicMeta?.title || titleCase(topic) },
           ]}
         />
         <EmptyState
@@ -247,7 +247,7 @@ export default function TopicClient({
           items={[
             { label: "Home", href: "/" },
             { label: topicMeta?.category.name || titleCase(category), href: `/${category}` },
-            { label: titleCase(topic) },
+            { label: topicMeta?.title || titleCase(topic) },
           ]}
         />
 
@@ -334,7 +334,7 @@ export default function TopicClient({
                       <>
                         <span>•</span>
                         <Link href={`/${category}/${a.topic}`}>
-                          {titleCase(a.topic)}
+                          {a.topic === topic ? (topicMeta?.title || titleCase(a.topic)) : titleCase(a.topic)}
                         </Link>
                       </>
                     )}
