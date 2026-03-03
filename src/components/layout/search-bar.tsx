@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, X, Clock, TrendingUp } from "lucide-react";
 import { getTranslations, type Locale } from "@/lib/i18n";
+import { useArticleSearch } from "@/hooks/useGraphQL";
 
 interface SearchResult {
   id: string;
@@ -62,9 +63,11 @@ const trendingSearches = [
 export default function SearchBar({ locale, isOpen, onClose, className = "" }: SearchBarProps) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const t = getTranslations(locale);
+  const { searchArticles, getSearchSuggestions } = useArticleSearch();
 
   // Focus input when search opens
   useEffect(() => {
@@ -73,25 +76,53 @@ export default function SearchBar({ locale, isOpen, onClose, className = "" }: S
     }
   }, [isOpen]);
 
-  // Handle search
+  // Handle search and suggestions
   useEffect(() => {
     if (query.length > 2) {
       setIsLoading(true);
-      // Simulate API call
-      const timer = setTimeout(() => {
-        const filtered = mockSearchResults.filter(result =>
-          result.title.toLowerCase().includes(query.toLowerCase())
-        );
-        setResults(filtered);
-        setIsLoading(false);
+      
+      const searchTimer = setTimeout(async () => {
+        try {
+          // Get search results
+          const searchResponse = await searchArticles({
+            query: query.trim(),
+            take: 6,
+            skip: 0,
+            status: 'PUBLISHED'
+          });
+
+          if (searchResponse?.searchArticles?.articles) {
+            const searchResults: SearchResult[] = searchResponse.searchArticles.articles.map(article => ({
+              id: article.id,
+              title: article.title,
+              category: article.category.name,
+              url: `/${article.category.slug}/${article.slug}`,
+              type: 'article' as const
+            }));
+            setResults(searchResults);
+          }
+
+          // Get search suggestions
+          const suggestionsResponse = await getSearchSuggestions(query.trim(), 5);
+          if (suggestionsResponse?.searchSuggestions) {
+            setSuggestions(suggestionsResponse.searchSuggestions);
+          }
+        } catch (error) {
+          console.error('Search error:', error);
+          setResults([]);
+          setSuggestions([]);
+        } finally {
+          setIsLoading(false);
+        }
       }, 300);
 
-      return () => clearTimeout(timer);
+      return () => clearTimeout(searchTimer);
     } else {
       setResults([]);
+      setSuggestions([]);
       setIsLoading(false);
     }
-  }, [query]);
+  }, [query, searchArticles, getSearchSuggestions]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -193,6 +224,29 @@ export default function SearchBar({ locale, isOpen, onClose, className = "" }: S
                 </div>
               ) : (
                 <div className="p-6 space-y-6">
+                  {/* Search Suggestions */}
+                  {suggestions.length > 0 && (
+                    <div>
+                      <div className="mb-3 flex items-center gap-2">
+                        <Search className="h-4 w-4 text-slate-400" />
+                        <h3 className="text-sm font-semibold text-slate-700 uppercase tracking-wide">
+                          Suggestions
+                        </h3>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {suggestions.map((suggestion) => (
+                          <button
+                            key={suggestion}
+                            onClick={() => handleSuggestionClick(suggestion)}
+                            className="rounded-full bg-blue-50 px-3 py-1 text-sm text-blue-700 transition-colors hover:bg-blue-100"
+                          >
+                            {suggestion}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
                   {/* Recent Searches */}
                   <div>
                     <div className="mb-3 flex items-center gap-2">

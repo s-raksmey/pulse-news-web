@@ -186,21 +186,76 @@ export function useArticleViewTracking() {
   return { trackView, viewTracked };
 }
 
-// Hook for search functionality (when implemented)
+// Hook for search functionality
 export function useArticleSearch() {
   const { executeQuery, loading, error } = useGraphQL();
 
-  const searchArticles = useCallback(async (query: string, filters: ArticleFilters = {}) => {
-    // This would need a search query to be implemented in the backend
-    // For now, we'll use the regular articles query with filters
-    return executeQuery<{ articles: Article[] }>(Q_ARTICLES, {
-      ...filters,
-      // search: query // This would be added when backend supports search
-    });
+  const searchArticles = useCallback(async (searchInput: {
+    query: string;
+    categorySlug?: string;
+    tags?: string[];
+    authorName?: string;
+    status?: string;
+    dateFrom?: string;
+    dateTo?: string;
+    sortBy?: string;
+    sortOrder?: string;
+    take?: number;
+    skip?: number;
+  }) => {
+    const SEARCH_ARTICLES_QUERY = `
+      query SearchArticles($input: SearchInput!) {
+        searchArticles(input: $input) {
+          articles {
+            id
+            title
+            slug
+            excerpt
+            status
+            topic
+            coverImageUrl
+            authorName
+            isFeatured
+            isEditorsPick
+            isBreaking
+            viewCount
+            publishedAt
+            createdAt
+            updatedAt
+            category {
+              id
+              name
+              slug
+            }
+          }
+          totalCount
+          hasMore
+        }
+      }
+    `;
+
+    return executeQuery<{ searchArticles: { articles: Article[], totalCount: number, hasMore: boolean } }>(
+      SEARCH_ARTICLES_QUERY, 
+      { input: searchInput }
+    );
+  }, [executeQuery]);
+
+  const getSearchSuggestions = useCallback(async (searchQuery: string, limit = 5) => {
+    const SEARCH_SUGGESTIONS_QUERY = `
+      query SearchSuggestions($query: String!, $limit: Int) {
+        searchSuggestions(query: $query, limit: $limit)
+      }
+    `;
+
+    return executeQuery<{ searchSuggestions: string[] }>(
+      SEARCH_SUGGESTIONS_QUERY, 
+      { query: searchQuery, limit }
+    );
   }, [executeQuery]);
 
   return {
     searchArticles,
+    getSearchSuggestions,
     loading,
     error
   };
